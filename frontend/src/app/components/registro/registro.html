@@ -1,0 +1,281 @@
+<div class="page-container">
+  <app-page-header
+    kicker="Sistema Comunitario Unificado"
+    titulo="Bienvenido a WankaPets"
+    descripcion="Plataforma digital para la protección, rescate inmediato y adopción responsable en la provincia de Huancayo. Conectamos vecinos, refugios comunales y clínicas veterinarias."
+  >
+    <app-status-badge tono="teal"><i class="bi bi-people-fill"></i> Registro Cívico</app-status-badge>
+  </app-page-header>
+
+  <div class="registro-grid">
+    <!-- Columna izquierda: indicador y selector de rol -->
+    <div class="registro-intro">
+      <section class="section-gap panel-rescates" aria-label="Indicador de rescates">
+        <div class="panel-cabecera">
+          <app-status-badge tono="teal"><i class="bi bi-geo-alt-fill"></i> Junín</app-status-badge>
+          <strong class="text-accent-deep">+1,420 rescates gestionados en Junín</strong>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="stat-valor text-accent">18</div>
+            <div class="stat-label">Albergues</div>
+          </div>
+          <div class="stat">
+            <div class="stat-valor text-accent">32</div>
+            <div class="stat-label">Veterinarias</div>
+          </div>
+          <div class="stat">
+            <div class="stat-valor text-accent">890+</div>
+            <div class="stat-label">Vecinos</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-gap" aria-label="Selección de rol">
+        <h2 class="seccion-titulo">Registro Cívico por Perfil</h2>
+        <p class="intro-texto">Selecciona cómo deseas contribuir a la red animalista de Huancayo:</p>
+
+        <div class="roles-lista">
+          <button
+            type="button"
+            class="rol-card"
+            [class.activa]="rolSeleccionado() === 'VECINO'"
+            [attr.aria-pressed]="rolSeleccionado() === 'VECINO'"
+            (click)="seleccionarRol('VECINO')"
+          >
+            <span class="rol-icono"><i class="bi bi-person-heart"></i></span>
+            <span class="rol-copy">
+              <strong>Vecino / Adoptante</strong>
+              <span class="rol-descripcion">Adopta, reporta casos y dona</span>
+            </span>
+            @if (rolSeleccionado() === 'VECINO') {
+              <i class="bi bi-check-circle-fill rol-check" aria-hidden="true"></i>
+            }
+          </button>
+
+          <button
+            type="button"
+            class="rol-card"
+            [class.activa]="rolSeleccionado() === 'ALBERGUE'"
+            [attr.aria-pressed]="rolSeleccionado() === 'ALBERGUE'"
+            (click)="seleccionarRol('ALBERGUE')"
+          >
+            <span class="rol-icono"><i class="bi bi-house-heart-fill"></i></span>
+            <span class="rol-copy">
+              <strong>Albergue / Refugio</strong>
+              <span class="rol-descripcion">Custodia masiva y campañas</span>
+            </span>
+            @if (rolSeleccionado() === 'ALBERGUE') {
+              <i class="bi bi-check-circle-fill rol-check" aria-hidden="true"></i>
+            }
+          </button>
+
+          <button
+            type="button"
+            class="rol-card"
+            [class.activa]="rolSeleccionado() === 'VETERINARIA'"
+            [attr.aria-pressed]="rolSeleccionado() === 'VETERINARIA'"
+            (click)="seleccionarRol('VETERINARIA')"
+          >
+            <span class="rol-icono"><i class="bi bi-hospital-fill"></i></span>
+            <span class="rol-copy">
+              <strong>Veterinaria Aliada</strong>
+              <span class="rol-descripcion">Atención médica y CMVP</span>
+            </span>
+            @if (rolSeleccionado() === 'VETERINARIA') {
+              <i class="bi bi-check-circle-fill rol-check" aria-hidden="true"></i>
+            }
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Columna derecha: formulario dinámico -->
+    <section class="section-gap" aria-label="Formulario de registro">
+      <div
+        class="wanka-card formulario-card"
+        [style.--tema-color]="temaActual().colorPrincipal"
+        [style.--tema-fondo]="temaActual().fondoSuave"
+      >
+        <div class="tema-badge">
+          <i class="bi bi-info-circle-fill text-accent"></i>
+          <span>{{ temaActual().textoBadge }}</span>
+        </div>
+
+        @if (errorMensaje()) {
+          <div class="error-alert" role="alert">
+            <i class="bi bi-exclamation-octagon-fill"></i>
+            <div>{{ errorMensaje() }}</div>
+          </div>
+        }
+
+        <form (ngSubmit)="registrar()">
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Nombre Completo / Titular</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Ej: Daniel Quispe Huamán"
+                [ngModel]="nombreCompleto()"
+                (ngModelChange)="nombreCompleto.set($event)"
+                name="nombreCompleto"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Correo Electrónico</label>
+              <input
+                type="email"
+                class="form-control"
+                placeholder="vecino.huancayo@wankapets.pe"
+                [ngModel]="email()"
+                (ngModelChange)="email.set($event)"
+                name="email"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Contraseña</label>
+              <input
+                type="password"
+                class="form-control"
+                placeholder="••••••••"
+                [ngModel]="password()"
+                (ngModelChange)="password.set($event)"
+                name="password"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Teléfono Celular / WhatsApp</label>
+              <input
+                type="tel"
+                class="form-control"
+                placeholder="964 123 456"
+                [ngModel]="telefono()"
+                (ngModelChange)="telefono.set($event)"
+                name="telefono"
+              />
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label">Distrito en Junín</label>
+              <select
+                class="form-select"
+                [ngModel]="distrito()"
+                (ngModelChange)="distrito.set($event)"
+                name="distrito"
+              >
+                <option value="El Tambo">El Tambo (Huancayo)</option>
+                <option value="Huancayo Centro">Huancayo Centro</option>
+                <option value="Chilca">Chilca</option>
+                <option value="Pilcomayo">Pilcomayo</option>
+                <option value="San Agustín de Cajas">San Agustín de Cajas</option>
+              </select>
+            </div>
+
+            @if (rolSeleccionado() === 'VECINO') {
+              <div class="col-md-6">
+                <label class="form-label">DNI (Documento de Identidad)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="8 dígitos"
+                  maxlength="8"
+                  [ngModel]="dni()"
+                  (ngModelChange)="dni.set($event)"
+                  name="dni"
+                  required
+                />
+              </div>
+            } @else if (rolSeleccionado() === 'ALBERGUE') {
+              <div class="col-md-6">
+                <label class="form-label">Nombre del Albergue o Asociación</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Ej: Huellitas del Mantaro"
+                  [ngModel]="nombreAlbergue()"
+                  (ngModelChange)="nombreAlbergue.set($event)"
+                  name="nombreAlbergue"
+                  required
+                />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">RUC o N° Registro Comunal</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Ej: 20608912345"
+                  [ngModel]="rucoRegistro()"
+                  (ngModelChange)="rucoRegistro.set($event)"
+                  name="rucoRegistro"
+                />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Capacidad / Límite Operativo</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Ej: 45 plazas"
+                  [ngModel]="capacidad()"
+                  (ngModelChange)="capacidad.set($event)"
+                  name="capacidad"
+                />
+              </div>
+            } @else {
+              <div class="col-md-6">
+                <label class="form-label">Número de Colegiatura CMVP</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="CMVP N° 08492"
+                  [ngModel]="cmvp()"
+                  (ngModelChange)="cmvp.set($event)"
+                  name="cmvp"
+                  required
+                />
+              </div>
+              <div class="col-12">
+                <label class="form-label">Razón Social / Nombre Comercial</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Ej: Clínica Veterinaria Huancayo Sur"
+                  [ngModel]="nombreVeterinaria()"
+                  (ngModelChange)="nombreVeterinaria.set($event)"
+                  name="nombreVeterinaria"
+                />
+              </div>
+            }
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-wanka w-100 fw-bold py-3 mb-3"
+            [disabled]="cargando()"
+          >
+            @if (cargando()) {
+              <span class="live-dot" aria-hidden="true"></span>
+              Registrando en la red...
+            } @else {
+              <i class="bi bi-shield-check"></i> {{ temaActual().textoBoton }}
+            }
+          </button>
+        </form>
+
+        <div class="login-enlace">
+          <span>¿Ya tienes una cuenta registrada? </span>
+          <a routerLink="/login" class="enlace-destacado">Iniciar Sesión</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

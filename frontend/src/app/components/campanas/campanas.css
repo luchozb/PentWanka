@@ -1,0 +1,216 @@
+/* Campañas — sistema WankaPets Premium */
+
+.campanas-lista {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.campana-card {
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.campana-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .campana-grid {
+    grid-template-columns: minmax(0, 12rem) minmax(0, 1fr) minmax(0, 14rem);
+  }
+}
+
+.campana-fecha {
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .campana-fecha {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+  }
+}
+
+.fecha-bloque {
+  padding: 1.25rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background-color: var(--accent-soft);
+}
+
+.fecha-dia {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+.fecha-numero {
+  margin-block: 0.25rem;
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: clamp(2.25rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--accent-deep);
+}
+
+.fecha-mes {
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+
+.fecha-horario {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background-color: var(--surface);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+
+.campana-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.campana-titulo {
+  margin: 0 0 0.85rem;
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.detalle-linea {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.875rem;
+  color: var(--ink-secondary);
+}
+
+.detalle-linea i {
+  flex-shrink: 0;
+}
+
+.respaldo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-muted);
+  font-size: 0.8125rem;
+  color: var(--ink-secondary);
+}
+
+.campana-accion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  text-align: left;
+}
+
+@media (min-width: 768px) {
+  .campana-accion {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .campana-accion .btn {
+    width: 100%;
+  }
+}
+
+.cupos-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+}
+
+.cupos-detalle {
+  font-size: 0.75rem;
+  color: var(--ink-secondary);
+}
+
+.dialog-subtitulo {
+  margin: 0 0 1.25rem;
+  font-size: 0.875rem;
+  color: var(--ink-secondary);
+}
+
+.requisitos-nota {
+  margin-bottom: 1.5rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-muted);
+}
+
+.requisitos-titulo {
+  margin-bottom: 0.4rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.requisitos-lista {
+  margin: 0;
+  padding-left: 1.15rem;
+  font-size: 0.875rem;
+  color: var(--ink-secondary);
+}
+
+.dialog-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.reserva-exito {
+  padding: 1rem 0;
+  text-align: center;
+}
+
+.exito-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1rem;
+  border-radius: var(--radius-pill);
+  background-color: var(--success-soft);
+  color: var(--success);
+  font-size: 2rem;
+}
+
+.exito-titulo {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.exito-texto {
+  margin-inline: auto;
+  margin-bottom: 1.5rem;
+  max-width: 46ch;
+  font-size: 0.9375rem;
+  color: var(--ink-secondary);
+}

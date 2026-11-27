@@ -1,0 +1,614 @@
+<div class="page-container">
+  <!-- ==========================================================================
+       ALERTA ACTIVA
+       ========================================================================== -->
+  @if (reporteDestacado(); as destacado) {
+    <aside class="alerta-bar py-2 px-3" role="alert">
+      <div class="container d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <div class="d-flex align-items-center gap-2 small">
+          <app-status-badge [tono]="tonoTipoReporte(destacado.tipo)">
+            {{ etiquetaAlerta(destacado.tipo) }}
+          </app-status-badge>
+          <span class="text-ink">{{ textoAlerta(destacado) }}</span>
+        </div>
+        <a [routerLink]="['/reportes', destacado.id]" class="btn btn-sm btn-wanka-alert alerta-link">
+          Ver Reporte &amp; Contacto <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </aside>
+  }
+
+  <!-- ==========================================================================
+       SECCIÓN 1: HERO
+       ========================================================================== -->
+  <section class="section-gap hero-section">
+    <div class="container py-lg-4">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-7">
+          <app-page-header
+            kicker="RED CIUDADANA DEL VALLE DEL MANTARO"
+            titulo="Dales una segunda oportunidad en el Valle del Mantaro. Adopta, no compres."
+            descripcion="Conectamos a albergues locales, clínicas veterinarias solidarias y familias responsables en Huancayo Centro, El Tambo, Chilca, Pilcomayo y San Jerónimo."
+          >
+            <a href="#catalogo" class="btn btn-wanka px-4">
+              <i class="bi bi-heart-fill me-1"></i> Quiero Adoptar
+            </a>
+            <a routerLink="/reportes/nuevo" class="btn btn-wanka-alert px-4">
+              <i class="bi bi-megaphone-fill me-1"></i> Reportar Pérdida / Hallazgo
+            </a>
+            <button type="button" class="btn btn-wanka-outline px-4" (click)="abrirHogarTemporal('Chaski')">
+              <i class="bi bi-house-heart-fill me-1"></i> Ser Hogar Temporal
+            </button>
+          </app-page-header>
+
+          <div class="row g-3 pt-2 text-center text-sm-start border-top mt-2">
+            <div class="col-6 col-md-3">
+              <div class="display-6 fw-bold text-accent">418+</div>
+              <div class="small text-muted fw-semibold">Adopciones 2024</div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="display-6 fw-bold text-accent">12</div>
+              <div class="small text-muted fw-semibold">Albergues Aliados</div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="display-6 fw-bold text-accent">100%</div>
+              <div class="small text-muted fw-semibold">Esterilizados</div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="display-6 fw-bold text-accent">{{ reportesActivos().length }}</div>
+              <div class="small text-muted fw-semibold">Reportes activos</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="position-relative">
+            <img
+              src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=900"
+              alt="Puka y Milagros Huancayo"
+              class="hero-imagen"
+            />
+            <div class="wanka-card hero-caso-card position-absolute bottom-0 start-0 m-3 p-3">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <app-status-badge tono="success">Caso de Éxito</app-status-badge>
+                <span class="small text-muted fw-bold">El Tambo, Junín</span>
+              </div>
+              <div class="fw-bold text-ink fs-6">Puka y Milagros</div>
+              <div class="small text-muted dato-pequeno">
+                Adoptada tras 4 meses de recuperación en el Refugio Huancayo Unido.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SECCIÓN 2: CASOS URGENTES
+       ========================================================================== -->
+  <section class="section-gap casos-section">
+    <div class="container py-lg-2">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-2">
+        <div>
+          <div class="mb-2">
+            <app-status-badge tono="urgent">
+              <i class="bi bi-clock-history"></i> ATENCIÓN INMEDIATA REQUERIDA
+            </app-status-badge>
+          </div>
+          <h2 class="h3 fw-bold mb-1 text-ink">
+            Casos Críticos que Necesitan Hogar Temporal o Rescate
+          </h2>
+          <p class="text-muted small mb-0">
+            Mascotas que necesitan salir del albergue temporal esta semana por espacio saturado o post-operatorio.
+          </p>
+        </div>
+        <a href="#reportes-recientes" class="small fw-bold text-decoration-none text-urgente">
+          Ver Todos los Reportes de Alerta <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-6">
+          <div class="wanka-card wanka-card-hover h-100 d-flex flex-column">
+            <div class="caso-imagen position-relative">
+              <img
+                src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=800"
+                alt="Chaski"
+                class="img-cover"
+              />
+              <span class="position-absolute top-0 start-0 m-2">
+                <app-status-badge tono="urgent">URGENTE</app-status-badge>
+              </span>
+              <span class="badge-lugar position-absolute bottom-0 start-0 m-2">Chorrillos, El Tambo</span>
+            </div>
+            <div class="p-3 d-flex flex-column flex-grow-1">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <h4 class="h5 fw-bold mb-0 text-ink">Chaski</h4>
+                <span class="small text-muted fw-bold">Cachorro • 3 meses</span>
+              </div>
+              <p class="small text-muted mb-3 flex-grow-1 caso-descripcion">
+                Cachorrito rescatado en Chorrillos (El Tambo). Busca hogar temporal de recuperación o adopción definitiva con patio seguro.
+              </p>
+              <div class="small text-success mb-3">
+                <div><i class="bi bi-check2"></i> Primera vacuna</div>
+                <div><i class="bi bi-check2"></i> Desparasitado</div>
+              </div>
+              <div class="d-flex gap-2">
+                <a [routerLink]="['/mascota', 'mascota-chaski']" class="btn btn-wanka w-100 btn-sm fw-bold">
+                  Conocer a Chaski
+                </a>
+                <button type="button" class="btn btn-wanka-outline btn-sm" title="Hogar Temporal" (click)="abrirHogarTemporal('Chaski')">
+                  <i class="bi bi-house-heart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="wanka-card wanka-card-hover h-100 d-flex flex-column">
+            <div class="caso-imagen position-relative">
+              <img
+                src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=800"
+                alt="Killa"
+                class="img-cover"
+              />
+              <span class="position-absolute top-0 start-0 m-2">
+                <app-status-badge tono="urgent">CRÍTICO</app-status-badge>
+              </span>
+              <span class="badge-lugar position-absolute bottom-0 start-0 m-2">Pq. Huamanmarca</span>
+            </div>
+            <div class="p-3 d-flex flex-column flex-grow-1">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <h4 class="h5 fw-bold mb-0 text-ink">Killa</h4>
+                <span class="small text-muted fw-bold">Gatita • 8 meses</span>
+              </div>
+              <p class="small text-muted mb-3 flex-grow-1 caso-descripcion">
+                Gatita mestiza rescatada en Parque Huamanmarca. Muy ronroneadora y dócil; esterilizada recientemente, lista para departamento.
+              </p>
+              <div class="small text-success mb-3">
+                <div><i class="bi bi-check2"></i> Esterilizada</div>
+                <div><i class="bi bi-check2"></i> Test Retro Negativo</div>
+              </div>
+              <div class="d-flex gap-2">
+                <a [routerLink]="['/mascota', 'mascota-munay']" class="btn btn-wanka w-100 btn-sm fw-bold">
+                  Conocer a Killa
+                </a>
+                <button type="button" class="btn btn-wanka-outline btn-sm" title="Hogar Temporal" (click)="abrirHogarTemporal('Killa')">
+                  <i class="bi bi-house-heart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+          <div class="wanka-card wanka-card-hover h-100 d-flex flex-column">
+            <div class="caso-imagen position-relative">
+              <img
+                src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=800"
+                alt="Inti"
+                class="img-cover"
+              />
+              <span class="position-absolute top-0 start-0 m-2">
+                <app-status-badge tono="ochre">ADULTO MAYOR</app-status-badge>
+              </span>
+              <span class="badge-lugar position-absolute bottom-0 start-0 m-2">Chilca Alta</span>
+            </div>
+            <div class="p-3 d-flex flex-column flex-grow-1">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <h4 class="h5 fw-bold mb-0 text-ink">Inti</h4>
+                <span class="small text-muted fw-bold">Perro • 4 años</span>
+              </div>
+              <p class="small text-muted mb-3 flex-grow-1 caso-descripcion">
+                Perro noble y tranquilo rescatado tras atropello menor en Chilca. Ya recuperado por completo, excelente compañero para adultos mayores.
+              </p>
+              <div class="small text-success mb-3">
+                <div><i class="bi bi-check2"></i> Vacunado Séxtuple</div>
+                <div><i class="bi bi-check2"></i> Castrado</div>
+              </div>
+              <div class="d-flex gap-2">
+                <a [routerLink]="['/mascota', 'mascota-inti']" class="btn btn-wanka w-100 btn-sm fw-bold">
+                  Conocer a Inti
+                </a>
+                <button type="button" class="btn btn-wanka-outline btn-sm" title="Hogar Temporal" (click)="abrirHogarTemporal('Inti')">
+                  <i class="bi bi-house-heart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SECCIÓN 2B: MASCOTAS REPORTADAS POR LA COMUNIDAD
+       ========================================================================== -->
+  <section id="reportes-recientes" class="section-gap reportes-section">
+    <div class="container py-lg-2">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3">
+        <div>
+          <div class="mb-2">
+            <app-status-badge tono="teal">
+              <i class="bi bi-broadcast"></i> RED DE ALERTA RÁPIDA
+            </app-status-badge>
+          </div>
+          <h2 class="h3 fw-bold mb-1 text-ink">Mascotas reportadas por la comunidad</h2>
+          <p class="text-muted small mb-0">
+            {{ reportesActivos().length }} reportes activos difundidos a albergues, serenazgo y brigadas de rescate del Valle del Mantaro.
+          </p>
+        </div>
+        <a routerLink="/reportes/nuevo" class="btn btn-sm btn-wanka-alert">
+          <i class="bi bi-megaphone-fill me-1"></i> Reportar Pérdida / Hallazgo
+        </a>
+      </div>
+
+      <div class="wanka-card filtros-panel mb-4">
+        <span class="section-kicker">TIPO DE REPORTE</span>
+        <app-filter-pills
+          [opciones]="opcionesReporte"
+          [activo]="filtroReporte()"
+          (seleccionado)="seleccionarFiltroReporte($event)"
+        />
+      </div>
+
+      <div class="reportes-grid">
+        @for (r of reportesFiltrados(); track r.id) {
+          <article class="wanka-card wanka-card-hover reporte-card d-flex flex-column">
+            <div class="reporte-imagen position-relative">
+              @if (r.imagenUrl) {
+                <img [src]="r.imagenUrl" [alt]="nombreReporte(r.nombreMascota)" class="img-cover" />
+              } @else {
+                <div class="reporte-sin-imagen">
+                  <i class="bi bi-heart-pulse"></i>
+                </div>
+              }
+              <div class="position-absolute top-0 start-0 m-2">
+                <app-status-badge [tono]="tonoTipoReporte(r.tipo)">
+                  {{ etiquetaTipoReporte(r.tipo) }}
+                </app-status-badge>
+              </div>
+              <div class="position-absolute bottom-0 start-0 m-2">
+                <span class="badge-lugar"><i class="bi bi-geo-alt"></i> {{ r.distrito }}</span>
+              </div>
+            </div>
+
+            <div class="p-3 d-flex flex-column flex-grow-1">
+              <div class="d-flex justify-content-between align-items-center mb-1 gap-2">
+                <a [routerLink]="['/reportes', r.id]" class="text-decoration-none">
+                  <h3 class="h5 fw-bold mb-0 text-ink">{{ nombreReporte(r.nombreMascota) }}</h3>
+                </a>
+                <span class="small fw-semibold text-muted">{{ r.especie }}</span>
+              </div>
+              <div class="small text-muted mb-2">{{ r.colorPrincipal }} · {{ r.tamano }}</div>
+              <p class="small text-muted flex-grow-1 mb-2 reporte-descripcion">{{ r.rasgosDistintivos }}</p>
+
+              <div class="small text-muted mb-3">
+                <div><i class="bi bi-geo-alt me-1"></i> {{ r.direccionOReferencia }}</div>
+                <div><i class="bi bi-clock-history me-1"></i> {{ r.fechaSuceso }} · Publicado {{ r.fechaCreacion }}</div>
+              </div>
+
+              <div class="pt-2 border-top mt-auto d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                <span class="small fw-semibold text-ink">
+                  <i class="bi bi-person me-1"></i> {{ r.nombreContacto }}
+                </span>
+                <div class="d-flex gap-2 flex-wrap">
+                  <a [routerLink]="['/reportes', r.id]" class="btn btn-sm btn-wanka-outline">Ver ficha</a>
+                  @if (r.mantenerNumeroVisible) {
+                    <a class="btn btn-sm btn-wanka" [href]="enlaceTelefono(r.telefonoContacto)">
+                      <i class="bi bi-telephone me-1"></i> Contactar
+                    </a>
+                  }
+                </div>
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <div class="wanka-card p-4 w-100">
+            <p class="small text-muted mb-0">
+              No hay reportes con este filtro. Si necesitas difundir un caso, usa el botón "Reportar Pérdida / Hallazgo".
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SECCIÓN 3 & 4: PROCESO Y CATÁLOGO
+       ========================================================================== -->
+  <section id="catalogo" class="section-gap">
+    <div class="container py-lg-2">
+      <div class="wanka-card wanka-card-hover p-4 mb-5">
+        <h3 class="h5 fw-bold mb-4 text-center text-accent-deep">
+          ¿Cómo funciona la adopción con WankaPets?
+        </h3>
+        <div class="row g-4 text-center">
+          <div class="col-6 col-md-3">
+            <span class="step-numero">1</span>
+            <div class="fw-bold small">Elige &amp; Postula</div>
+            <div class="step-texto text-muted">Revisa la ficha médica y completa el formulario con datos de tu vivienda en Junín.</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <span class="step-numero">2</span>
+            <div class="fw-bold small">Entrevista Virtual</div>
+            <div class="step-texto text-muted">Coordinamos una llamada breve con el albergue tutor para resolver dudas mutuas.</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <span class="step-numero">3</span>
+            <div class="fw-bold small">Visita y Química</div>
+            <div class="step-texto text-muted">Conoce a la mascota en su albergue o casa temporal para confirmar afinidad.</div>
+          </div>
+          <div class="col-6 col-md-3">
+            <span class="step-numero">4</span>
+            <div class="fw-bold small">Firma de Acta</div>
+            <div class="step-texto text-muted">Entrega a domicilio con cartilla de vacunación y seguimiento comunitario.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="adopciones" class="mb-4">
+        <div class="mb-2 d-flex flex-wrap align-items-center gap-2">
+          <app-status-badge tono="teal">CATÁLOGO ABIERTO DE ADOPCIONES</app-status-badge>
+          <a routerLink="/reportes/nuevo" [queryParams]="{ modo: 'adopcion' }" class="btn btn-sm btn-wanka-outline">
+            <i class="bi bi-plus-circle me-1"></i> Publicar en adopción
+          </a>
+        </div>
+        <h2 class="h3 fw-bold mb-1 text-ink">Encuentra a tu compañero ideal en Junín</h2>
+        <p class="text-muted small mb-0">Filtra por distrito, especie, edad y tamaño para encontrar peludos listos para ser entregados bajo acta de compromiso.</p>
+      </div>
+
+      <div class="wanka-card filtros-panel mb-4">
+        <div class="row g-3 align-items-center">
+          <div class="col-md-3">
+            <span class="section-kicker">ESPECIE</span>
+            <app-filter-pills
+              [opciones]="opcionesEspecie"
+              [activo]="mascotaService.filtroEspecie()"
+              (seleccionado)="cambiarEspecie($event)"
+            />
+          </div>
+
+          <div class="col-md-4">
+            <span class="section-kicker">DISTRITO (HUANCAYO)</span>
+            <app-filter-pills
+              [opciones]="opcionesDistrito"
+              [activo]="mascotaService.filtroDistrito()"
+              (seleccionado)="cambiarDistrito($event)"
+            />
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label small fw-bold text-muted mb-1" for="buscadorMascotas">BUSCADOR</label>
+            <input
+              id="buscadorMascotas"
+              type="text"
+              class="form-control form-control-sm"
+              placeholder="Buscar por nombre o chip..."
+              [ngModel]="mascotaService.busquedaTexto()"
+              (ngModelChange)="mascotaService.busquedaTexto.set($event)"
+            />
+          </div>
+
+          <div class="col-md-2 text-md-end">
+            <button class="btn btn-sm btn-wanka-outline mt-4" (click)="cambiarEspecie('TODOS'); cambiarDistrito('TODOS'); mascotaService.busquedaTexto.set('')">
+              <i class="bi bi-arrow-clockwise"></i> Restablecer Filtros
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        @for (m of mascotaService.mascotasFiltradas(); track m.id) {
+          <div class="col-md-6 col-lg-3">
+            <div class="wanka-card wanka-card-hover h-100 d-flex flex-column">
+              <div class="mascota-imagen position-relative">
+                <img [src]="m.imagenUrl" [alt]="m.nombre" class="img-cover" />
+                <div class="position-absolute top-0 start-0 m-2">
+                  <app-status-badge [tono]="m.estado.includes('Urgente') ? 'urgent' : 'teal'">{{ m.estado }}</app-status-badge>
+                </div>
+                <div class="position-absolute bottom-0 start-0 m-2">
+                  <span class="badge-lugar"><i class="bi bi-geo-alt"></i> {{ m.distrito }}</span>
+                </div>
+              </div>
+
+              <div class="p-3 d-flex flex-column flex-grow-1">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <h3 class="h5 fw-bold mb-0 text-ink">{{ m.nombre }}</h3>
+                  <span class="small fw-semibold text-muted">{{ m.edadAprox }}</span>
+                </div>
+                <div class="small text-muted mb-2">{{ m.genero }} • {{ m.tamano }}</div>
+                <p class="small text-muted flex-grow-1 mb-3 mascota-descripcion">{{ m.descripcion }}</p>
+
+                <div class="pt-2 border-top mt-auto">
+                  <a [routerLink]="['/mascota', m.id]" class="btn btn-wanka-outline w-100 py-2 btn-sm fw-bold text-center">
+                    Ver Ficha Oficial <i class="bi bi-arrow-right ms-1"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SECCIÓN 6: HOGAR TEMPORAL
+       ========================================================================== -->
+  <section id="hogar-temporal" class="section-gap hogar-section">
+    <div class="container py-lg-4">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-7">
+          <span class="hogar-kicker">
+            <i class="bi bi-house-heart-fill"></i> PROGRAMA VOLUNTARIO "HOGAR PUENTE"
+          </span>
+
+          <h2 class="display-5 fw-bold mb-3 text-ink">
+            ¿No puedes adoptar de forma definitiva?<br />
+            <span class="text-ochre-deep">Salva vidas prestando tu hogar por unas semanas.</span>
+          </h2>
+
+          <p class="lead mb-4 text-muted">
+            Los albergues de El Tambo y Huancayo están al tope de su capacidad. Al alojar a un perrito o gatito convaleciente por 2 a 4 semanas, la red WankaPets cubre <strong>el 100% de su alimento y medicinas</strong>. Tú sólo pones el cariño y el techo.
+          </p>
+
+          <div class="d-flex flex-wrap align-items-center gap-3">
+            <button type="button" class="btn btn-wanka px-4" (click)="abrirHogarTemporal('Chaski')">
+              <i class="bi bi-heart-fill me-1"></i> Postular como Hogar Temporal
+            </button>
+            <div class="d-flex align-items-center gap-2 small fw-bold text-ochre-deep">
+              <i class="bi bi-check-circle-fill text-success fs-5"></i>
+              Alimento + Atención Veterinaria Cubierta
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="wanka-card p-4 hogar-info-card">
+            <h5 class="fw-bold mb-3 text-ink"><i class="bi bi-shield-check text-warning me-1"></i> ¿Cómo funciona el Hogar Temporal?</h5>
+            <ul class="list-unstyled d-flex flex-column gap-3 mb-0 small text-muted">
+              <li class="d-flex gap-2">
+                <span class="num-badge">1</span>
+                <div><strong>Duración flexible:</strong> Tú decides el tiempo (desde 10 días hasta 1 mes).</div>
+              </li>
+              <li class="d-flex gap-2">
+                <span class="num-badge">2</span>
+                <div><strong>Kit de bienvenida entregado:</strong> El albergue te entrega comida, platos y medicinas.</div>
+              </li>
+              <li class="d-flex gap-2">
+                <span class="num-badge">3</span>
+                <div><strong>Supervisión veterinaria:</strong> Visitas y consultas gratuitas con veterinarias CMVP de Junín.</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       DIÁLOGO DE POSTULACIÓN A HOGAR TEMPORAL
+       ========================================================================== -->
+  <app-dialog
+    [open]="mostrarModalHogarTemporal()"
+    titulo="Postular como Hogar Temporal"
+    (cerrado)="cerrarModalHogar()"
+  >
+    <div class="mb-3">
+      <app-status-badge tono="neutral">Programa Solidario WankaPets</app-status-badge>
+      <div class="small text-muted mt-2">Apoyo para: {{ mascotaHogarNombre() }}</div>
+    </div>
+
+    <form (ngSubmit)="enviarPostulacionHogar()">
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label small fw-bold text-muted" for="diasDisponibles">¿Por cuánto tiempo podrías brindar cobijo?</label>
+          <select id="diasDisponibles" class="form-select" [ngModel]="diasDisponibles()" (ngModelChange)="diasDisponibles.set($event)" name="dias">
+            <option value="1 a 2 semanas">1 a 2 semanas (Convalecencia inmediata)</option>
+            <option value="3 a 4 semanas">3 a 4 semanas (Recomendado)</option>
+            <option value="Hasta que sea adoptado">Hasta adopción definitiva</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label small fw-bold text-muted" for="tipoVivienda">Tipo de Vivienda en Junín</label>
+          <select id="tipoVivienda" class="form-select" [ngModel]="tipoViviendaHogar()" (ngModelChange)="tipoViviendaHogar.set($event)" name="vivienda">
+            <option value="Casa con patio seguro">Casa con patio cerrado y seguro</option>
+            <option value="Departamento con mallas">Departamento con mallas de protección</option>
+            <option value="Casa de campo en el Valle">Casa de campo (Valle del Mantaro)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label small fw-bold text-muted" for="telefonoHogar">Teléfono de Contacto WhatsApp</label>
+        <input id="telefonoHogar" type="tel" class="form-control" placeholder="964 123 456" [ngModel]="telefonoContactoHogar()" (ngModelChange)="telefonoContactoHogar.set($event)" name="telefono" required />
+      </div>
+
+      <div class="callout-aviso p-3 rounded-3 mb-4 border small">
+        <i class="bi bi-info-circle-fill me-1"></i>
+        La red WankaPets y el albergue tutor cubrirán todo el alimento balanceado y las atenciones médicas del animal durante su estadía.
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-wanka-outline px-4" (click)="cerrarModalHogar()">Cancelar</button>
+        <button type="submit" class="btn btn-wanka px-4 fw-bold" [disabled]="cargandoHogar()">
+          @if (cargandoHogar()) {
+            <span class="skeleton btn-skeleton" aria-hidden="true"></span> Registrando...
+          } @else {
+            <i class="bi bi-send-fill me-1"></i> Enviar Postulación de Hogar Temporal
+          }
+        </button>
+      </div>
+    </form>
+  </app-dialog>
+
+  <!-- ==========================================================================
+       DIÁLOGO DE POSTULACIÓN ENVIADA
+       ========================================================================== -->
+  <app-dialog
+    [open]="mostrarModalHogarExito()"
+    titulo="¡Solicitud de hogar temporal Enviada!"
+    (cerrado)="cerrarExitoHogar()"
+  >
+    <div class="text-center mb-3">
+      <app-status-badge tono="success">¡Misión Cumplida en el Valle del Mantaro!</app-status-badge>
+      <p class="text-muted small mb-0 mt-2">
+        Tu postulación para brindar un hogar temporal ha sido registrada con respaldo oficial en el sistema de WankaPet.
+      </p>
+      <div class="small text-muted mt-1 dato-pequeno">
+        Proceso amparado por el Protocolo Cívico de Adopción Responsable de Junín
+      </div>
+    </div>
+
+    <div class="pasos-panel p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
+        <h6 class="fw-bold mb-0 text-ink">Próximos Pasos del Proceso</h6>
+        <app-status-badge tono="ochre">Paso 1 de 3 en marcha</app-status-badge>
+      </div>
+      <app-progress-track [valor]="33" tono="warning" />
+
+      <div class="row g-3 mt-1">
+        <div class="col-md-4">
+          <div class="paso-card h-100">
+            <span class="paso-num">1</span>
+            <div class="fw-bold small text-ink mb-1">Revisión del Albergue</div>
+            <div class="paso-texto text-muted">
+              En 24 - 48 hrs, el equipo evaluará tus datos domiciliarios y estilo de vida para {{ mascotaHogarNombre() }}.
+            </div>
+            <div class="small text-muted mt-2 fw-semibold paso-plazo">Plazo estim.: 12 a 24 horas</div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="paso-card h-100">
+            <span class="paso-num paso-num--inactivo">2</span>
+            <div class="fw-bold small text-ink mb-1">Contacto WhatsApp</div>
+            <div class="paso-texto text-muted">
+              Coordinación de entrevista corta al teléfono <strong class="telefono-mono">+51 964 000 000</strong>.
+            </div>
+            <div class="small text-muted mt-2 fw-semibold paso-plazo">Llamada o videollamada breve</div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="paso-card h-100">
+            <span class="paso-num paso-num--inactivo">3</span>
+            <div class="fw-bold small text-ink mb-1">Firma y Entrega</div>
+            <div class="paso-texto text-muted">
+              Firma presencial del acta de acogida y bienvenida con cartilla al día.
+            </div>
+            <div class="small text-muted mt-2 fw-semibold paso-plazo">Sede Huancayo o entrega guiada</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-wanka w-100 py-3 fw-bold" (click)="cerrarExitoHogar()">
+      Cerrar
+    </button>
+  </app-dialog>
+</div>

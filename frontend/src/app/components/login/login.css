@@ -1,0 +1,47 @@
+/* ==========================================================================
+   LOGIN — WankaPets Premium
+   Solo tokens del sistema definidos en styles.css
+   ========================================================================== */
+
+.red-callout {
+  border-color: var(--border);
+  background-color: var(--accent-soft);
+}
+
+.stat-box {
+  border-radius: var(--radius-md);
+  box-shadow: none;
+}
+
+.acceso-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-pill);
+  background-color: var(--accent-soft);
+  color: var(--accent);
+}
+
+.btn-google {
+  border-radius: var(--radius-md);
+  color: var(--ink);
+}
+
+.separador-suave { opacity: 0.15; }
+
+.alerta-error {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--urgent);
+  border-radius: var(--radius-sm);
+  background-color: var(--urgent-soft);
+  color: var(--urgent);
+}
+
+.btn-skeleton {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  vertical-align: middle;
+}

@@ -1,0 +1,151 @@
+@if (albergueActual(); as a) {
+  <div class="page-container">
+    <app-page-header
+      kicker="Red Oficial de Albergues y Refugios • Valle del Mantaro"
+      [titulo]="a.nombre"
+      [descripcion]="'Refugio comunitario aliado a WankaPets en ' + a.distrito + '. Transparencia cívica, capacidad en tiempo real y protocolo de adopciones guiadas.'"
+    >
+      <a routerLink="/inicio" class="btn btn-wanka-outline btn-sm d-inline-flex align-items-center gap-1">
+        <i class="bi bi-arrow-left"></i> Volver a Inicio
+      </a>
+    </app-page-header>
+
+    <!-- Ficha del albergue -->
+    <section class="section-gap" aria-label="Ficha del albergue">
+      <div class="wanka-card albergue-hero">
+        <div class="hero-grid">
+          <div class="hero-detalles">
+            <div class="hero-badges">
+              <app-status-badge tono="teal">Refugio Oficial</app-status-badge>
+              <app-status-badge tono="success"><i class="bi bi-patch-check-fill"></i> Verificado WankaPets</app-status-badge>
+              <app-status-badge tono="neutral">{{ a.registroMunicipal }}</app-status-badge>
+              <app-status-badge tono="neutral"><i class="bi bi-geo-alt"></i> Distrito: {{ a.distrito }}</app-status-badge>
+            </div>
+
+            <h2 class="albergue-nombre">{{ a.nombre }}</h2>
+
+            <div class="hero-meta">
+              <span><i class="bi bi-person-badge"></i><strong>Dirección General:</strong> {{ a.coordinadora }}</span>
+              <span><i class="bi bi-geo-alt-fill"></i><strong>Ubicación:</strong> {{ a.direccion }}</span>
+            </div>
+
+            <div class="hero-acciones">
+              <button type="button" class="btn btn-wanka fw-bold" (click)="abrirDonar()">
+                <i class="bi bi-heart-fill"></i> Donar a este Albergue
+              </button>
+              <a [href]="'https://wa.me/' + a.telefonoWhatsapp" target="_blank" rel="noopener" class="btn btn-wanka-outline fw-bold d-inline-flex align-items-center gap-1">
+                <i class="bi bi-whatsapp"></i> WhatsApp Refugio
+              </a>
+              <a [href]="a.enlaceMapa" target="_blank" rel="noopener" class="btn btn-wanka-outline fw-bold d-inline-flex align-items-center gap-1">
+                <i class="bi bi-map"></i> Ver en Mapa
+              </a>
+            </div>
+          </div>
+
+          <!-- Indicador de aforo -->
+          <div class="aforo-panel" [class.es-critico]="a.porcentajeOcupacion > 90">
+            <div class="section-kicker aforo-kicker">Indicador de Capacidad y Aforo</div>
+            <div class="aforo-valor">{{ a.porcentajeOcupacion }}%</div>
+            <div class="aforo-etiqueta">de Ocupación Actual</div>
+            <app-progress-track
+              [valor]="a.porcentajeOcupacion"
+              [tono]="a.porcentajeOcupacion > 90 ? 'urgent' : 'accent'"
+            />
+            <div class="aforo-detalle">
+              <strong>{{ a.animalesAlbergados }} animales albergados</strong> actualmente<br />
+              <span class="aforo-limite">(Límite operativo: {{ a.limiteCapacidad }} plazas)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Adopciones vigentes -->
+    <section class="section-gap" aria-label="Adopciones vigentes">
+      <div class="seccion-cabecera">
+        <div>
+          <span class="section-kicker">ADOPCIONES VIGENTES</span>
+          <h2 class="seccion-titulo">Peluditos albergados actualmente en {{ a.nombre }}</h2>
+        </div>
+        <a routerLink="/inicio" class="enlace-destacado d-inline-flex align-items-center gap-1">
+          Ver catálogo completo <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+
+      <div class="mascotas-grid">
+        @for (pet of mascotasDelAlbergue(); track pet.id) {
+          <article class="wanka-card wanka-card-hover mascota-card">
+            <div class="mascota-media">
+              <img [src]="pet.imagenUrl" [alt]="pet.nombre" class="mascota-foto" />
+              <app-status-badge class="mascota-estado" tono="teal">{{ pet.estado }}</app-status-badge>
+              <app-status-badge class="mascota-distrito" tono="neutral">
+                <i class="bi bi-geo-alt"></i> {{ pet.distrito }}
+              </app-status-badge>
+            </div>
+            <div class="mascota-cuerpo">
+              <div class="mascota-cabecera">
+                <h3 class="mascota-nombre">{{ pet.nombre }}</h3>
+                <span class="mascota-edad">{{ pet.edadAprox }}</span>
+              </div>
+              <div class="mascota-atributos">{{ pet.genero }} • {{ pet.tamano }}</div>
+              <p class="mascota-descripcion">{{ pet.descripcion | slice:0:110 }}...</p>
+              <a [routerLink]="['/mascota', pet.id]" class="btn btn-wanka w-100 fw-bold">
+                Ver Ficha Oficial <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- Misión y colaboración -->
+    <section class="section-gap page-grid--with-aside" aria-label="Misión y colaboración">
+      <div class="wanka-card mision-card">
+        <app-status-badge tono="teal">Activo desde {{ a.anioFundacion }}</app-status-badge>
+        <h2 class="seccion-titulo">Misión y Compromiso Comunitario</h2>
+        <p class="mision-texto">{{ a.mision }}</p>
+        <div class="sede-nota">
+          <i class="bi bi-geo-alt-fill"></i>
+          <span><strong>Sede:</strong> {{ a.direccion }} • Junín, Perú</span>
+        </div>
+      </div>
+
+      <aside class="wanka-card colaborar-card">
+        <div class="colaborar-icono"><i class="bi bi-box2-heart-fill"></i></div>
+        <h3 class="colaborar-titulo">¿Cómo puedes colaborar?</h3>
+        <p class="colaborar-texto">
+          El albergue se sostiene gracias a aportes comunitarios del Valle del Mantaro. Puedes colaborar con alimento balanceado, voluntariado o adopción.
+        </p>
+        <button class="btn btn-wanka w-100 fw-bold" (click)="abrirDonar()">Ver Canales de Apoyo</button>
+      </aside>
+    </section>
+  </div>
+}
+
+<app-dialog [open]="mostrarModalDonar()" [titulo]="'Donar a ' + (albergueActual()?.nombre || 'albergue')" (cerrado)="cerrarDonar()">
+  <p class="dialog-subtitulo">Tu aporte sostiene alimentación y medicina para 42 rescatados</p>
+
+  <div class="donacion-canal">
+    <div class="canal-cabecera">
+      <app-status-badge tono="teal">Yape / Plin</app-status-badge>
+      <strong>Número Directo Oficial:</strong>
+    </div>
+    <div class="canal-numero">{{ albergueActual()?.metodosDonacion?.yapePlin }}</div>
+  </div>
+
+  <div class="donacion-canal">
+    <div class="canal-cabecera">
+      <app-status-badge tono="neutral">BCP Soles</app-status-badge>
+      <strong>Cuenta Corriente:</strong>
+    </div>
+    <div class="canal-numero">{{ albergueActual()?.metodosDonacion?.bcpCuenta }}</div>
+    <div class="canal-cci">CCI: {{ albergueActual()?.metodosDonacion?.bcpCci }}</div>
+  </div>
+
+  <div class="nota-alimentos">
+    <i class="bi bi-bag-heart-fill text-accent"></i>
+    <span>{{ albergueActual()?.metodosDonacion?.contactoAlimentos }}</span>
+  </div>
+
+  <button type="button" class="btn btn-wanka w-100 fw-bold" (click)="cerrarDonar()">Aceptar</button>
+</app-dialog>

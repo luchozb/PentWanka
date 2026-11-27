@@ -1,0 +1,10 @@
+<div class="mapa-contenedor" [style.height.px]="altura()">
+  <div #lienzo class="mapa-lienzo" [attr.aria-label]="'Mapa de ' + (distrito() || 'la zona del reporte')"></div>
+
+  @if (!soloLectura()) {
+    <p class="mapa-ayuda">
+      <i class="bi bi-cursor" aria-hidden="true"></i>
+      Haz clic en el mapa para marcar el punto del avistamiento
+    </p>
+  }
+</div>

@@ -1,0 +1,783 @@
+<div class="page-container">
+
+  <app-page-header
+    [kicker]="esAdopcion() ? 'Catálogo de Adopciones' : 'Red de Alerta Rápida'"
+    [titulo]="tituloPagina()"
+    [descripcion]="descripcionPagina()"
+  >
+    <a routerLink="/inicio" class="btn btn-wanka-outline btn-sm">
+      <i class="bi bi-arrow-left me-1"></i> Volver a Inicio
+    </a>
+  </app-page-header>
+
+  <section class="section-gap" aria-label="Asistente de reporte">
+    <div class="page-grid--with-aside">
+
+      <!-- ====================================================================
+           STEPPER + FORMULARIO
+           ==================================================================== -->
+      <div class="wizard-main">
+        <div class="wanka-card wizard-card">
+
+          <div class="wizard-stepper">
+            <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+              <span class="section-kicker mb-0">{{ etiquetaProgreso() }}</span>
+              <span class="wizard-progreso-text text-accent">{{ progresoWizard() }}%</span>
+            </div>
+            <app-progress-track [valor]="progresoWizard()" [tono]="tonoProgreso()" />
+
+            <div class="wizard-steps">
+              <button
+                type="button"
+                class="wizard-step"
+                [class.activo]="pasoActual() === 1"
+                [class.completado]="pasoActual() > 1"
+                (click)="irAlPaso(1)"
+              >
+                <span class="wizard-step-num">
+                  @if (pasoActual() > 1) {
+                    <i class="bi bi-check-lg"></i>
+                  } @else {
+                    1
+                  }
+                </span>
+                <span class="wizard-step-label">Situación</span>
+              </button>
+
+              <button
+                type="button"
+                class="wizard-step"
+                [class.activo]="pasoActual() === 2"
+                [class.completado]="pasoActual() > 2"
+                (click)="irAlPaso(2)"
+              >
+                <span class="wizard-step-num">
+                  @if (pasoActual() > 2) {
+                    <i class="bi bi-check-lg"></i>
+                  } @else {
+                    2
+                  }
+                </span>
+                <span class="wizard-step-label">Datos</span>
+              </button>
+
+              <button
+                type="button"
+                class="wizard-step"
+                [class.activo]="pasoActual() === 3"
+                [class.completado]="pasoActual() > 3"
+                (click)="irAlPaso(3)"
+              >
+                <span class="wizard-step-num">
+                  @if (pasoActual() > 3) {
+                    <i class="bi bi-check-lg"></i>
+                  } @else {
+                    3
+                  }
+                </span>
+                <span class="wizard-step-label">Ubicación</span>
+              </button>
+
+              <button
+                type="button"
+                class="wizard-step"
+                [class.activo]="pasoActual() === 4"
+                (click)="irAlPaso(4)"
+              >
+                <span class="wizard-step-num">4</span>
+                <span class="wizard-step-label">{{ etiquetaPaso4() }}</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="wizard-form">
+
+            <!-- ==============================================================
+                 PASO 3: UBICACIÓN Y FOTOGRAFÍA
+                 ============================================================== -->
+            @if (pasoActual() === 3) {
+              <div class="animate-fade-in-up">
+                <span class="section-kicker">PASO 03 / 04</span>
+                <h2 class="wizard-step-title">{{ tituloPaso3() }}</h2>
+                <p class="step-description mb-4">{{ descripcionPaso3() }}</p>
+
+                <div class="mb-3">
+                  <label class="form-label">Distrito del Valle del Mantaro</label>
+                  <app-filter-pills
+                    [opciones]="opcionesDistrito"
+                    [activo]="distrito()"
+                    (seleccionado)="seleccionarDistrito($event)"
+                  />
+                </div>
+
+                <div class="row g-3 mb-4">
+                  <div class="col-md-7">
+                    <label class="form-label">Referencia Exacta / Cruce de Calles</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      [ngModel]="direccionOReferencia()"
+                      (ngModelChange)="direccionOReferencia.set($event)"
+                      placeholder="Visto por última vez en Calle Real cd..."
+                    />
+                  </div>
+
+                  @if (!esAdopcion()) {
+                    <div class="col-md-5">
+                      <label class="form-label">Fecha y Hora Aproximada</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [ngModel]="fechaSuceso()"
+                        (ngModelChange)="fechaSuceso.set($event)"
+                        placeholder="Hoy, 14:30 hrs"
+                      />
+                    </div>
+                  }
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label">Fotografía de la Mascota</label>
+
+                  <div class="photo-dropzone" role="button" tabindex="0" (click)="fileInput.click()">
+                    <input
+                      type="file"
+                      #fileInput
+                      class="d-none"
+                      accept="image/*"
+                      (change)="onArchivoSeleccionado($event)"
+                    />
+
+                    <span class="photo-dropzone-icon">
+                      <i class="bi bi-camera-fill"></i>
+                    </span>
+
+                    <span class="photo-dropzone-title">
+                      Haz clic para cargar imagen o alternar foto de muestra
+                    </span>
+                    <span class="photo-dropzone-hint">
+                      Se optimizará automáticamente en resolución de afiche digital de rescate.
+                    </span>
+
+                    <button
+                      type="button"
+                      class="btn btn-wanka-outline btn-sm foto-toggle"
+                      (click)="$event.stopPropagation(); alternarFotoMuestra()"
+                    >
+                      <i class="bi bi-camera me-1"></i> Foto activa: "{{ fotoNombre() }}"
+                      <span class="foto-toggle-hint">(Click para alternar)</span>
+                    </button>
+                  </div>
+
+                  @if (errorMensaje()) {
+                    <p class="error-imagen small mt-2 mb-0">
+                      <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i> {{ errorMensaje() }}
+                    </p>
+                  }
+                </div>
+
+                <div class="mb-4">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <i class="bi bi-geo-alt-fill text-accent"></i>
+                    <label class="form-label mb-0 text-accent">
+                      {{ etiquetaMapa() }}
+                    </label>
+                  </div>
+
+                  <app-mapa-reporte
+                    [distrito]="distrito()"
+                    [latitud]="latitud()"
+                    [longitud]="longitud()"
+                    [radioKm]="2"
+                    [altura]="320"
+                    (ubicacionSeleccionada)="seleccionarUbicacion($event)"
+                  />
+
+                  <p class="mapa-estado small text-muted mt-2 mb-0">
+                    <i class="bi bi-geo-alt me-1"></i>
+                    Sector Activo: {{ distrito() }}
+                    @if (!esAdopcion()) { (Radio de 2 km) }
+                    @if (esAdopcion()) { · Punto de encuentro }
+                    @if (latitud() !== undefined && longitud() !== undefined) {
+                      · Punto marcado: {{ latitud() | number:'1.4-4' }}, {{ longitud() | number:'1.4-4' }}
+                    }
+                  </p>
+                </div>
+
+                <div class="wizard-actions">
+                  <button type="button" class="btn btn-wanka-outline" (click)="retrocederPaso()">
+                    <i class="bi bi-arrow-left me-1"></i> Paso Anterior
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn fw-bold"
+                    [class.btn-wanka]="tipoReporte() !== 'PERDIDA'"
+                    [class.btn-wanka-alert]="tipoReporte() === 'PERDIDA'"
+                    (click)="avanzarPaso()"
+                  >
+                    Siguiente Paso <i class="bi bi-arrow-right ms-1"></i>
+                  </button>
+                </div>
+              </div>
+            }
+
+            <!-- ==============================================================
+                 PASO 1: MOTIVO DEL REPORTE
+                 ============================================================== -->
+            @if (pasoActual() === 1) {
+              <div class="animate-fade-in-up">
+                <span class="section-kicker">PASO 01 / 04</span>
+                <h2 class="wizard-step-title">¿Cuál es el motivo del reporte?</h2>
+                <p class="step-description mb-4">
+                  Elige el caso para priorizar los canales de emergencia en Huancayo.
+                </p>
+
+                <div class="mb-4">
+                  <app-filter-pills
+                    [opciones]="opcionesTipo"
+                    [activo]="tipoReporte()"
+                    (seleccionado)="seleccionarTipoDesdePill($event)"
+                  />
+                </div>
+
+                <div class="tipo-lista">
+                  <button
+                    type="button"
+                    class="tipo-card tipo-card--urgente wanka-card-hover"
+                    [class.activo]="tipoReporte() === 'PERDIDA'"
+                    (click)="seleccionarTipo('PERDIDA')"
+                  >
+                    <span class="tipo-card-cabecera">
+                      <span class="tipo-card-titulo">He perdido a mi mascota</span>
+                      <app-status-badge tono="urgent">ALERTA ROJA</app-status-badge>
+                    </span>
+                    <span class="tipo-card-descripcion">
+                      Genera afiche de difusión inmediata con código QR, aviso a veterinarias y geolocalización.
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="tipo-card tipo-card--teal wanka-card-hover"
+                    [class.activo]="tipoReporte() === 'HALLAZGO'"
+                    (click)="seleccionarTipo('HALLAZGO')"
+                  >
+                    <span class="tipo-card-cabecera">
+                      <span class="tipo-card-titulo">He encontrado un animal callejero / herido</span>
+                      <app-status-badge tono="teal">HALLAZGO</app-status-badge>
+                    </span>
+                    <span class="tipo-card-descripcion">
+                      Busca si un vecino lo está rastreando o solicita asistencia médica temporal a albergues de la zona.
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="tipo-card tipo-card--ochre wanka-card-hover"
+                    [class.activo]="tipoReporte() === 'HOGAR_TEMPORAL_URGENTE'"
+                    (click)="seleccionarTipo('HOGAR_TEMPORAL_URGENTE')"
+                  >
+                    <span class="tipo-card-cabecera">
+                      <span class="tipo-card-titulo">Busco hogar temporal o adopción urgente</span>
+                      <app-status-badge tono="ochre">APOYO</app-status-badge>
+                    </span>
+                    <span class="tipo-card-descripcion">
+                      Para casos de desahucio, rescate de camadas o tránsito de emergencia previo a esterilización.
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="tipo-card tipo-card--success wanka-card-hover"
+                    [class.activo]="esAdopcion()"
+                    (click)="seleccionarTipo('ADOPCION')"
+                  >
+                    <span class="tipo-card-cabecera">
+                      <span class="tipo-card-titulo">Quiero dar una mascota en adopción</span>
+                      <app-status-badge tono="success">ADOPCIÓN</app-status-badge>
+                    </span>
+                    <span class="tipo-card-descripcion">
+                      Completa su ficha y publica el animal en “Encuentra a tu compañero ideal” del inicio.
+                    </span>
+                  </button>
+                </div>
+
+                <div class="wizard-actions wizard-actions--end">
+                  <button
+                    type="button"
+                    class="btn fw-bold"
+                    [class.btn-wanka]="tipoReporte() !== 'PERDIDA'"
+                    [class.btn-wanka-alert]="tipoReporte() === 'PERDIDA'"
+                    (click)="avanzarPaso()"
+                  >
+                    Siguiente Paso <i class="bi bi-arrow-right ms-1"></i>
+                  </button>
+                </div>
+              </div>
+            }
+
+            <!-- ==============================================================
+                 PASO 2: RASGOS Y DATOS
+                 ============================================================== -->
+            @if (pasoActual() === 2) {
+              <div class="animate-fade-in-up">
+                <span class="section-kicker">PASO 02 / 04</span>
+                <h2 class="wizard-step-title">{{ tituloPaso2() }}</h2>
+                <p class="step-description mb-4">{{ descripcionPaso2() }}</p>
+
+                <div class="mb-3">
+                  <label class="form-label">Especie:</label>
+                  <app-filter-pills
+                    [opciones]="opcionesEspecie"
+                    [activo]="especie()"
+                    (seleccionado)="seleccionarEspecie($event)"
+                  />
+                </div>
+
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Nombre del animal</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      [ngModel]="nombreMascota()"
+                      (ngModelChange)="nombreMascota.set($event)"
+                      placeholder="Rocky"
+                      required
+                    />
+                  </div>
+                  @if (esAdopcion()) {
+                    <div class="col-md-6">
+                      <label class="form-label">Raza o tipo</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [ngModel]="razaAdopcion()"
+                        (ngModelChange)="razaAdopcion.set($event)"
+                        placeholder="Mestizo Andino"
+                      />
+                    </div>
+                  } @else {
+                    <div class="col-md-6">
+                      <label class="form-label">Raza o Tipo predominante</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [ngModel]="colorPrincipal()"
+                        (ngModelChange)="colorPrincipal.set($event)"
+                        placeholder="Mestizo pelaje caramelo"
+                      />
+                    </div>
+                  }
+                </div>
+
+                @if (esAdopcion()) {
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                      <label class="form-label">Edad aproximada</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        [ngModel]="edadAdopcion()"
+                        (ngModelChange)="edadAdopcion.set($event)"
+                        placeholder="1 año 8 meses"
+                      />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Distrito de origen</label>
+                      <input class="form-control" [value]="distrito()" readonly />
+                    </div>
+                  </div>
+                }
+
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Sexo</label>
+                    <select class="form-select" [ngModel]="genero()" (ngModelChange)="genero.set($event)">
+                      <option value="Macho">Macho</option>
+                      <option value="Hembra">Hembra</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Tamaño</label>
+                    <select class="form-select" [ngModel]="tamano()" (ngModelChange)="tamano.set($event)">
+                      <option value="Pequeño">Pequeño (menos de 10 kg)</option>
+                      <option value="Mediano">Mediano (10-20 kg)</option>
+                      <option value="Grande">Grande (más de 20 kg)</option>
+                    </select>
+                  </div>
+                </div>
+
+                @if (esAdopcion()) {
+                  <div class="mb-3">
+                    <label class="form-label">Historia y descripción</label>
+                    <textarea
+                      class="form-control"
+                      rows="3"
+                      [ngModel]="descripcionAdopcion()"
+                      (ngModelChange)="descripcionAdopcion.set($event)"
+                      placeholder="¿Cómo llegó al albergue? ¿Cómo es con otras mascotas y con niños?"
+                    ></textarea>
+                  </div>
+
+                  <div class="mb-4">
+                    <label class="form-label">Evaluación conductual</label>
+                    <textarea
+                      class="form-control"
+                      rows="2"
+                      [ngModel]="evaluacionAdopcion()"
+                      (ngModelChange)="evaluacionAdopcion.set($event)"
+                      placeholder="Sociable con personas y otros animales, ideal para familia con patio."
+                    ></textarea>
+                  </div>
+                } @else {
+                  <div class="mb-3">
+                    <label class="form-label">Señas particulares y distintivas</label>
+                    <textarea
+                      class="form-control"
+                      rows="3"
+                      [ngModel]="rasgosDistintivos()"
+                      (ngModelChange)="rasgosDistintivos.set($event)"
+                      placeholder="Collar rojo de lona con placa sin número. Mancha blanca en el pecho en forma de diamante. Cojera leve al trotar."
+                    ></textarea>
+                  </div>
+
+                  <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="collarCheck" [checked]="llevaCollar()" (change)="llevaCollar.set(!llevaCollar())">
+                    <label class="form-check-label small text-muted" for="collarCheck">
+                      Lleva collar o arnés de identificación al momento del reporte.
+                    </label>
+                  </div>
+                }
+
+                <div class="wizard-actions">
+                  <button type="button" class="btn btn-wanka-outline" (click)="retrocederPaso()">
+                    <i class="bi bi-arrow-left me-1"></i> Paso Anterior
+                  </button>
+                  <button
+                    type="button"
+                    class="btn fw-bold"
+                    [class.btn-wanka]="tipoReporte() !== 'PERDIDA'"
+                    [class.btn-wanka-alert]="tipoReporte() === 'PERDIDA'"
+                    (click)="avanzarPaso()"
+                  >
+                    Siguiente Paso <i class="bi bi-arrow-right ms-1"></i>
+                  </button>
+                </div>
+              </div>
+            }
+
+            <!-- ==============================================================
+                 PASO 4: CONTACTO DIRECTO
+                 ============================================================== -->
+            @if (pasoActual() === 4) {
+              <div class="animate-fade-in-up">
+                <span class="section-kicker">PASO 04 / 04</span>
+                <h2 class="wizard-step-title">{{ tituloPaso4() }}</h2>
+                <p class="step-description mb-4">{{ descripcionPaso4() }}</p>
+
+                @if (esAdopcion()) {
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                      <label class="form-label" for="wizardAlbergue">Albergue o tutor responsable</label>
+                      <input id="wizardAlbergue" type="text" class="form-control" placeholder="Ej: Huellitas del Mantaro" [ngModel]="nombreAlbergue()" (ngModelChange)="nombreAlbergue.set($event)" />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="wizardCoordinador">Coordinador de adopciones</label>
+                      <input id="wizardCoordinador" type="text" class="form-control" placeholder="Ej: Lic. Valeria Paucar" [ngModel]="coordinadorAlbergue()" (ngModelChange)="coordinadorAlbergue.set($event)" />
+                    </div>
+                  </div>
+
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                      <label class="form-label" for="wizardTelefonoAlbergue">Teléfono / WhatsApp</label>
+                      <div class="input-group">
+                        <span class="input-group-text">+51</span>
+                        <input id="wizardTelefonoAlbergue" type="tel" class="form-control" placeholder="964 123 456" [ngModel]="telefonoAlbergue()" (ngModelChange)="telefonoAlbergue.set($event)" />
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label" for="wizardHorario">Horario de visitas</label>
+                      <input id="wizardHorario" type="text" class="form-control" placeholder="Mar - Dom, 10am - 4pm" [ngModel]="horarioVisitas()" (ngModelChange)="horarioVisitas.set($event)" />
+                    </div>
+                  </div>
+
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-7">
+                      <label class="form-label" for="wizardDireccion">Dirección del albergue</label>
+                      <input id="wizardDireccion" type="text" class="form-control" placeholder="Ej: Jr. Los Sauces 340, El Tambo" [ngModel]="direccionAlbergue()" (ngModelChange)="direccionAlbergue.set($event)" />
+                    </div>
+                    <div class="col-md-5">
+                      <label class="form-label" for="wizardReferencia">Referencia</label>
+                      <input id="wizardReferencia" type="text" class="form-control" placeholder="Ej: A 4 cuadras del Parque Bolognesi" [ngModel]="referenciaAlbergue()" (ngModelChange)="referenciaAlbergue.set($event)" />
+                    </div>
+                  </div>
+
+                  <div class="wizard-checks mb-3">
+                    <div class="form-check">
+                      <input id="wizardVacunas" name="wizardVacunas" class="form-check-input" type="checkbox" [ngModel]="vacunasAlDia()" (ngModelChange)="vacunasAlDia.set($event)" />
+                      <label class="form-check-label" for="wizardVacunas">Vacunas al día</label>
+                    </div>
+                    <div class="form-check">
+                      <input id="wizardEsterilizado" name="wizardEsterilizado" class="form-check-input" type="checkbox" [ngModel]="esterilizado()" (ngModelChange)="esterilizado.set($event)" />
+                      <label class="form-check-label" for="wizardEsterilizado">Esterilizado</label>
+                    </div>
+                    <div class="form-check">
+                      <input id="wizardDesparasitado" name="wizardDesparasitado" class="form-check-input" type="checkbox" [ngModel]="desparasitado()" (ngModelChange)="desparasitado.set($event)" />
+                      <label class="form-check-label" for="wizardDesparasitado">Desparasitado</label>
+                    </div>
+                  </div>
+
+                  <div class="contacto-aviso">
+                    <i class="bi bi-info-circle me-1 text-accent"></i> La adopción implica un compromiso permanente. La ficha incluirá estos datos para que las familias coordinen una visita responsable.
+                  </div>
+                } @else {
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                      <label class="form-label">Nombre Completo del Contacto</label>
+                      <input type="text" class="form-control" [ngModel]="nombreContacto()" (ngModelChange)="nombreContacto.set($event)" placeholder="Carlos Mendoza" required />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Teléfono Celular / WhatsApp</label>
+                      <div class="input-group">
+                        <span class="input-group-text">+51</span>
+                        <input type="tel" class="form-control" [ngModel]="telefonoContacto()" (ngModelChange)="telefonoContacto.set($event)" placeholder="964 882 119" required />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" [ngModel]="emailContacto()" (ngModelChange)="emailContacto.set($event)" placeholder="carlos.mendoza.wanka@gmail.com" />
+                  </div>
+
+                  <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="visibleCheck" [checked]="mantenerNumeroVisible()" (change)="mantenerNumeroVisible.set(!mantenerNumeroVisible())">
+                    <label class="form-check-label small text-muted" for="visibleCheck">
+                      <strong>Mantener número visible en afiche de búsqueda</strong> (Recomendado para que vecinos puedan llamarte sin intermediarios).
+                    </label>
+                  </div>
+
+                  <div class="contacto-aviso">
+                    <i class="bi bi-info-circle me-1 text-accent"></i> Al publicar, aceptas compartir la información en grupos comunitarios de Huancayo, El Tambo y Chilca, respetando las leyes de protección de datos personales.
+                  </div>
+                }
+
+                @if (errorMensaje()) {
+                  <p class="error-imagen small mt-2 mb-0">
+                    <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i> {{ errorMensaje() }}
+                  </p>
+                }
+
+                <div class="wizard-actions">
+                  <button type="button" class="btn btn-wanka-outline" (click)="retrocederPaso()">
+                    <i class="bi bi-arrow-left me-1"></i> Paso Anterior
+                  </button>
+                  <button
+                    type="button"
+                    class="btn fw-bold"
+                    [class.btn-wanka]="tipoReporte() !== 'PERDIDA'"
+                    [class.btn-wanka-alert]="tipoReporte() === 'PERDIDA'"
+                    (click)="finalizarReporte()"
+                  >
+                    @if (esAdopcion()) {
+                      <i class="bi bi-house-heart me-1"></i>
+                    } @else {
+                      <i class="bi bi-broadcast me-1"></i>
+                    }
+                    {{ textoBotonPublicar() }}
+                  </button>
+                </div>
+              </div>
+            }
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================================
+           AFICHE DIGITAL EN TIEMPO REAL (contenido complementario)
+           ==================================================================== -->
+      <aside class="wizard-aside" aria-label="Vista previa del afiche digital">
+        <div class="wizard-aside-inner">
+
+          <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+            <div class="preview-estado">
+              <span class="live-dot"></span>
+              <span>AFICHE DIGITAL EN TIEMPO REAL</span>
+            </div>
+            <div class="preview-actualizacion">
+              <i class="bi bi-arrow-repeat"></i> Se actualiza al escribir
+            </div>
+          </div>
+
+          <div class="poster-digital afiche">
+            <div class="afiche-header" [style.--afiche-color]="colorAfiche()">
+              <div class="afiche-header-titulo">{{ tituloAfiche() }}</div>
+              <div class="afiche-header-subtitulo">{{ subtituloAfiche() }}</div>
+            </div>
+
+            <div class="afiche-foto">
+              <img
+                [src]="fotoUrl()"
+                alt="Foto Mascota Afiche"
+                class="afiche-imagen"
+                (error)="usarFotoRespaldo()"
+              />
+
+              <div class="afiche-lugar">
+                <span class="afiche-lugar-badge">
+                  <i class="bi bi-geo-alt-fill text-accent me-1"></i> {{ distrito() }}
+                </span>
+              </div>
+
+              <div class="afiche-oficial">
+                <span class="afiche-oficial-badge">
+                  <i class="bi bi-shield-fill-check me-1"></i>
+                  {{ esAdopcion() ? 'WankaPets Adopción Oficial' : 'WankaPets Alerta Oficial' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="afiche-body">
+              <h3 class="afiche-nombre">"{{ nombreMascota() || 'ROCKY' }}"</h3>
+
+              <div class="mb-1">
+                <span class="afiche-raza">{{ esAdopcion() ? razaAdopcion() : colorPrincipal() }}</span>
+              </div>
+              <div class="afiche-meta mb-3">
+                @if (esAdopcion()) {
+                  {{ genero() }} • {{ tamano() }} • Publicado: Desde hoy
+                } @else {
+                  {{ genero() }} • {{ tamano() }} (10-20kg) • Reportado: {{ fechaSuceso() }}
+                }
+              </div>
+
+              <div class="senas-box">
+                <div class="senas-titulo">
+                  <i class="bi bi-search"></i>
+                  {{ esAdopcion() ? 'HISTORIA Y CUIDADOS' : 'SEÑAS DISTINTIVAS CLAVE' }}
+                </div>
+                <div class="senas-texto">
+                  {{ esAdopcion() ? descripcionAdopcion() : rasgosDistintivos() }}
+                </div>
+                <div class="senas-direccion">
+                  <i class="bi bi-compass"></i> {{ direccionOReferencia() }}
+                </div>
+              </div>
+
+              <div class="contacto-box">
+                <div>
+                  @if (esAdopcion()) {
+                    <div class="contacto-label">TUTOR / ALBERGUE:</div>
+                    <div class="contacto-numero">
+                      <i class="bi bi-telephone me-1"></i> {{ telefonoAlbergue() }}
+                    </div>
+                    <div class="contacto-nombre">{{ nombreAlbergue() }}</div>
+                    <div class="contacto-nombre">{{ coordinadorAlbergue() }} (Coordinador)</div>
+                  } @else {
+                    <div class="contacto-label">CONTACTO INMEDIATO:</div>
+                    @if (mantenerNumeroVisible()) {
+                      <div class="contacto-numero">
+                        <i class="bi bi-telephone me-1"></i> {{ telefonoContacto() }}
+                      </div>
+                    } @else {
+                      <div class="contacto-numero contacto-protegido">
+                        <i class="bi bi-shield-check me-1"></i> Contacto protegido
+                      </div>
+                    }
+                    <div class="contacto-nombre">{{ nombreContacto() }} (Contacto)</div>
+                  }
+                </div>
+
+                <div class="text-center">
+                  <span class="qr-marco">
+                    @if (qrUrl()) {
+                      <img [src]="qrUrl()" alt="Código QR de la ficha del reporte" class="qr-imagen" />
+                    } @else {
+                      <i class="bi bi-qr-code qr-icon" aria-hidden="true"></i>
+                    }
+                  </span>
+                  <div class="qr-label">ESCANEAR FICHA</div>
+                </div>
+              </div>
+
+              <div class="afiche-footer">
+                <span>Red WankaPets: HYK-8842</span>
+                <span>Junín • Valle del Mantaro</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="descargas">
+            @if (esAdopcion()) {
+              <a routerLink="/inicio" fragment="adopciones" class="btn btn-wanka-outline">
+                <i class="bi bi-grid me-1"></i> Ver catálogo
+              </a>
+            } @else {
+              <button
+                type="button"
+                class="btn btn-wanka-outline"
+                (click)="finalizarReporte()"
+              >
+                <i class="bi bi-download me-1"></i> Descargar PNG
+              </button>
+            }
+
+            <a [href]="whatsappUrl()" target="_blank" class="btn btn-wanka">
+              <i class="bi bi-whatsapp me-1"></i> Grupos WhatsApp
+            </a>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       MODAL DE ALERTA DIFUNDIDA CON ÉXITO
+       ======================================================================== -->
+  <app-dialog [open]="alertaExitosa()" [titulo]="tituloExito()" (cerrado)="cerrarExito()">
+    <div class="exito-contenido">
+      <app-status-badge tono="neutral">{{ referenciaExito() }}</app-status-badge>
+
+      <div class="exito-icono">
+        <i [class]="'bi ' + iconoExito()"></i>
+      </div>
+
+      <p class="exito-texto">{{ textoExito() }}</p>
+
+      <div class="exito-acciones">
+        @if (esAdopcion()) {
+          <button type="button" class="btn btn-wanka py-3 fw-bold" (click)="irAlCatalogo()">
+            <i class="bi bi-grid me-1"></i> Ver en “Encuentra tus amigos”
+          </button>
+          <a
+            [routerLink]="['/mascota', ultimaMascotaId()]"
+            class="btn btn-wanka-outline py-2"
+            (click)="alertaExitosa.set(false)"
+          >
+            <i class="bi bi-file-earmark-heart me-1"></i> Ver ficha de adopción
+          </a>
+        } @else {
+          <a
+            [routerLink]="['/reportes', ultimoReporteId()]"
+            class="btn btn-wanka py-3 fw-bold"
+            (click)="alertaExitosa.set(false)"
+          >
+            <i class="bi bi-file-earmark-heart me-1"></i> Ver mi ficha publicada
+          </a>
+          <button type="button" class="btn btn-wanka-outline py-2" (click)="cerrarExito()">
+            Ver alerta en el Inicio
+          </button>
+        }
+        <button type="button" class="btn btn-wanka-outline py-2" (click)="alertaExitosa.set(false)">
+          Permanecer en el Formulario
+        </button>
+      </div>
+    </div>
+  </app-dialog>
+
+</div>

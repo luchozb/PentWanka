@@ -1,0 +1,245 @@
+<section class="container py-5 panel-page">
+  <app-page-header
+    kicker="Panel"
+    titulo="Mis publicaciones"
+    descripcion="Gestiona lo que publicaste y lo que pertenece a tu albergue."
+  />
+
+  @if (aviso(); as aviso) {
+    <div class="aviso" [class.aviso-error]="aviso.error" role="status">
+      <i class="bi" [class.bi-check-circle]="!aviso.error" [class.bi-exclamation-circle]="aviso.error"></i>
+      {{ aviso.texto }}
+    </div>
+  }
+
+  <div class="panel-resumen wanka-card">
+    <div>
+      <span class="section-kicker">Cuenta activa</span>
+      <strong>{{ usuario()?.nombreCompleto || 'Vecino Huancayo' }}</strong>
+      <span class="text-muted small">{{ usuario()?.email || 'vecino.huancayo@wankapets.pe' }}</span>
+    </div>
+    <div class="resumen-datos">
+      <span><strong>{{ misReportes().length }}</strong> reportes</span>
+      <span><strong>{{ misAdopciones().length }}</strong> adopciones</span>
+    </div>
+  </div>
+
+  <div class="panel-tabs" role="tablist" aria-label="Tipo de publicación">
+    <button
+      type="button"
+      role="tab"
+      [class.activa]="pestana() === 'reportes'"
+      [attr.aria-selected]="pestana() === 'reportes'"
+      (click)="seleccionarPestana('reportes')"
+    >
+      Reportes <span class="contador">{{ misReportes().length }}</span>
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [class.activa]="pestana() === 'adopciones'"
+      [attr.aria-selected]="pestana() === 'adopciones'"
+      (click)="seleccionarPestana('adopciones')"
+    >
+      Adopciones <span class="contador">{{ misAdopciones().length }}</span>
+    </button>
+  </div>
+
+  @if (pestana() === 'reportes') {
+    <div class="panel-grid">
+      @for (reporte of misReportes(); track reporte.id) {
+        <article class="publicacion-card wanka-card">
+          <div class="publicacion-imagen">
+            <img
+              [src]="reporte.imagenUrl || '/rocky_el_tambo.jpg'"
+              [alt]="'Foto de ' + (reporte.nombreMascota || 'la mascota')"
+              loading="lazy"
+            />
+          </div>
+          <div class="publicacion-cuerpo">
+            <div class="publicacion-encabezado">
+              <app-status-badge [tono]="reporte.activo ? 'teal' : 'neutral'">
+                {{ reporte.activo ? 'Activo' : 'Cerrado' }}
+              </app-status-badge>
+              <span class="etiqueta-tipo">{{ etiquetaTipo(reporte.tipo) }}</span>
+            </div>
+            <h3>{{ reporte.nombreMascota || 'Mascota sin nombre' }}</h3>
+            <p class="text-muted small mb-2">
+              <i class="bi bi-geo-alt"></i> {{ reporte.distrito }} · {{ reporte.direccionOReferencia }}
+            </p>
+            <p class="text-muted small mb-3">
+              <i class="bi bi-calendar3"></i> {{ reporte.fechaCreacion }}
+              <span class="separador">•</span> {{ reporte.nombreContacto }}
+            </p>
+            <div class="publicacion-acciones">
+              <a class="btn btn-wanka-outline btn-sm" [routerLink]="['/reportes', reporte.id]">
+                <i class="bi bi-eye"></i> Ver ficha
+              </a>
+              @if (reporte.activo) {
+                <button type="button" class="btn btn-wanka btn-sm" (click)="cerrarReporte(reporte)">
+                  Cerrar reporte
+                </button>
+              } @else {
+                <button type="button" class="btn btn-wanka-outline btn-sm" (click)="reabrirReporte(reporte)">
+                  Reabrir
+                </button>
+              }
+            </div>
+          </div>
+        </article>
+      } @empty {
+        <div class="estado-vacio wanka-card">
+          <i class="bi bi-broadcast"></i>
+          <h3>Aún no tienes reportes</h3>
+          <p class="text-muted">Cuando publiques una pérdida o un hallazgo, aparecerá aquí.</p>
+          <a class="btn btn-wanka btn-sm" routerLink="/reportes/nuevo">Crear reporte</a>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="panel-grid">
+      @for (mascota of misAdopciones(); track mascota.id) {
+        <article class="publicacion-card wanka-card">
+          <div class="publicacion-imagen">
+            <img
+              [src]="mascota.imagenUrl || '/rocky_el_tambo.jpg'"
+              [alt]="'Foto de ' + mascota.nombre"
+              loading="lazy"
+            />
+          </div>
+          <div class="publicacion-cuerpo">
+            <div class="publicacion-encabezado">
+              <app-status-badge [tono]="tonoMascota(mascota.estado)">
+                {{ mascota.estado }}
+              </app-status-badge>
+              <span class="etiqueta-tipo">{{ mascota.raza }}</span>
+            </div>
+            <h3>{{ mascota.nombre }}</h3>
+            <p class="text-muted small mb-2">
+              <i class="bi bi-geo-alt"></i> {{ mascota.distrito }} · {{ mascota.nombreAlbergue }}
+            </p>
+            <p class="text-muted small mb-3">
+              <i class="bi bi-tag"></i> {{ mascota.codigoAdopcion }}
+            </p>
+            <div class="publicacion-acciones">
+              <a class="btn btn-wanka-outline btn-sm" [routerLink]="['/mascota', mascota.id]">
+                <i class="bi bi-eye"></i> Ver ficha
+              </a>
+              <button type="button" class="btn btn-wanka-outline btn-sm" (click)="editar(mascota)">
+                <i class="bi bi-pencil"></i> Editar
+              </button>
+              <button type="button" class="btn btn-wanka-outline btn-sm" (click)="cambiarEstado(mascota)">
+                {{ mascota.estado === 'Adoptado' ? 'Restaurar' : 'Marcar adoptada' }}
+              </button>
+            </div>
+
+            @if (confirmandoEliminacion() === mascota.id) {
+              <div class="confirmar">
+                <span>¿Eliminar esta publicación?</span>
+                <button type="button" class="btn btn-wanka-alert btn-sm" (click)="eliminar(mascota)">
+                  Sí, eliminar
+                </button>
+                <button type="button" class="btn btn-wanka-outline btn-sm" (click)="cancelarEliminacion()">
+                  No
+                </button>
+              </div>
+            } @else {
+              <div class="accion-secundaria">
+                <button type="button" class="enlace-peligro" (click)="pedirEliminacion(mascota.id)">
+                  Eliminar publicación
+                </button>
+              </div>
+            }
+
+            @if (editandoId() === mascota.id) {
+              <div class="editor">
+                <h4 class="editor-titulo">Editar publicación</h4>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Nombre</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Ej: Chaski"
+                      [ngModel]="editNombre()"
+                      (ngModelChange)="editNombre.set($event)"
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Raza</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Ej: Mestizo Andino"
+                      [ngModel]="editRaza()"
+                      (ngModelChange)="editRaza.set($event)"
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Edad aproximada</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Ej: 1 año 8 meses"
+                      [ngModel]="editEdad()"
+                      (ngModelChange)="editEdad.set($event)"
+                    />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Distrito</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Ej: El Tambo"
+                      [ngModel]="editDistrito()"
+                      (ngModelChange)="editDistrito.set($event)"
+                    />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Descripción</label>
+                    <textarea
+                      class="form-control"
+                      rows="3"
+                      placeholder="Cuenta su historia, conducta y cuidados..."
+                      [ngModel]="editDescripcion()"
+                      (ngModelChange)="editDescripcion.set($event)"
+                    ></textarea>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Teléfono del albergue</label>
+                    <input
+                      type="tel"
+                      class="form-control"
+                      placeholder="964 123 456"
+                      [ngModel]="editTelefono()"
+                      (ngModelChange)="editTelefono.set($event)"
+                    />
+                  </div>
+                </div>
+                <div class="editor-acciones">
+                  <button type="button" class="btn btn-wanka btn-sm" (click)="guardarEdicion(mascota)">
+                    Guardar cambios
+                  </button>
+                  <button type="button" class="btn btn-wanka-outline btn-sm" (click)="cancelarEdicion()">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        </article>
+      } @empty {
+        <div class="estado-vacio wanka-card">
+          <i class="bi bi-heart"></i>
+          <h3>Aún no tienes adopciones publicadas</h3>
+          <p class="text-muted">Publica una mascota y podrás editarla o gestionarla desde aquí.</p>
+          <a
+            class="btn btn-wanka btn-sm"
+            [routerLink]="['/reportes/nuevo']"
+            [queryParams]="{ modo: 'adopcion' }"
+          >Dar en adopción</a>
+        </div>
+      }
+    </div>
+  }
+</section>

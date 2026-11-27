@@ -1,0 +1,168 @@
+<div class="page-container">
+  <app-page-header
+    kicker="Red Médica de Junín • Colegios y Clínicas"
+    titulo="Agenda de Campañas Veterinarias en el Valle del Mantaro"
+    descripcion="Esterilización a costo social, vacunación antirrábica comunitaria y triaje médico gratuito en El Tambo, Chilca y Huancayo Centro. Separa tu cupo con anticipación."
+  >
+    <app-status-badge tono="success">
+      <span class="live-dot" aria-hidden="true"></span>
+      {{ campanaService.campanas().length }} Campañas Activas
+    </app-status-badge>
+    <a routerLink="/inicio" class="btn btn-wanka-outline btn-sm d-inline-flex align-items-center gap-1">
+      <i class="bi bi-arrow-left"></i> Volver a Inicio
+    </a>
+  </app-page-header>
+
+  <section class="section-gap" aria-label="Lista de campañas veterinarias">
+    <div class="campanas-lista">
+      @for (campana of campanaService.campanas(); track campana.id) {
+        <article class="wanka-card wanka-card-hover campana-card">
+          <div class="campana-grid">
+            <!-- Bloque Fecha -->
+            <div class="campana-fecha">
+              <div class="fecha-bloque">
+                <div class="fecha-dia">{{ campana.diaSemana }}</div>
+                <div class="fecha-numero">{{ campana.fecha.split(' ')[0] }}</div>
+                <div class="fecha-mes">{{ campana.fecha.split(' ')[1] }} {{ campana.fecha.split(' ')[2] }}</div>
+                <div class="fecha-horario">
+                  <i class="bi bi-clock text-accent"></i> {{ campana.horario }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Detalles de la campaña -->
+            <div class="campana-detalles">
+              <div class="campana-badges">
+                <app-status-badge tono="teal">{{ campana.tipo }}</app-status-badge>
+                <app-status-badge tono="neutral"><i class="bi bi-geo-alt"></i> {{ campana.distrito }}</app-status-badge>
+                <app-status-badge tono="ochre">
+                  Cupos: {{ campana.cuposTotales - campana.cuposOcupados }} disponibles
+                </app-status-badge>
+              </div>
+
+              <h2 class="campana-titulo">{{ campana.titulo }}</h2>
+
+              <div class="detalle-linea">
+                <i class="bi bi-geo-alt-fill text-accent"></i>
+                <span><strong>Lugar:</strong> {{ campana.lugar }}</span>
+              </div>
+              <div class="detalle-linea">
+                <i class="bi bi-cash-stack text-accent"></i>
+                <span><strong>Costo Social:</strong> <strong>{{ campana.costoSocial }}</strong></span>
+              </div>
+              <div class="detalle-linea">
+                <i class="bi bi-building"></i>
+                <span>{{ campana.organizador }}</span>
+              </div>
+              <div class="respaldo">
+                <i class="bi bi-patch-check-fill text-accent"></i>
+                <span>{{ campana.respaldoCMVP }}</span>
+              </div>
+            </div>
+
+            <!-- Cupos y acción -->
+            <div class="campana-accion">
+              <div class="cupos-label">Capacidad de Atención:</div>
+              <app-progress-track
+                [valor]="(campana.cuposOcupados / campana.cuposTotales) * 100"
+                [tono]="(campana.cuposOcupados / campana.cuposTotales) * 100 >= 90 ? 'urgent' : 'accent'"
+              />
+              <div class="cupos-detalle">
+                <strong>{{ campana.cuposOcupados }}</strong> de {{ campana.cuposTotales }} cupos reservados
+              </div>
+              <button
+                type="button"
+                class="btn btn-wanka w-100 fw-bold"
+                (click)="abrirReserva(campana)"
+                [disabled]="campana.cuposOcupados >= campana.cuposTotales"
+              >
+                <i class="bi bi-calendar-plus"></i> Agendar Cita / Separar Cupo
+              </button>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <app-dialog [open]="mostrarModalReserva()" titulo="Separar Cupo Veterinario" (cerrado)="cerrarReserva()">
+    <p class="dialog-subtitulo">{{ campanaSeleccionada()?.titulo }}</p>
+
+    @if (!reservaConfirmada()) {
+      <form (ngSubmit)="confirmarReserva()">
+        <div class="mb-3">
+          <label class="form-label">Nombre del Dueño / Tutor</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Ej: Daniel Quispe Huamán"
+            [ngModel]="nombrePropietario()"
+            (ngModelChange)="nombrePropietario.set($event)"
+            name="nombrePropietario"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Teléfono WhatsApp</label>
+          <input
+            type="tel"
+            class="form-control"
+            placeholder="964 123 456"
+            [ngModel]="telefonoPropietario()"
+            (ngModelChange)="telefonoPropietario.set($event)"
+            name="telefonoPropietario"
+            required
+          />
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-8">
+            <label class="form-label">Nombre de la Mascota</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Ej: Firulais"
+              [ngModel]="nombreMascota()"
+              (ngModelChange)="nombreMascota.set($event)"
+              name="nombreMascota"
+              required
+            />
+          </div>
+          <div class="col-4">
+            <label class="form-label">Especie</label>
+            <select class="form-select" [ngModel]="especieMascota()" (ngModelChange)="especieMascota.set($event)" name="especie">
+              <option value="Perro">Perro</option>
+              <option value="Gato">Gato</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="requisitos-nota">
+          <div class="requisitos-titulo"><i class="bi bi-exclamation-triangle text-warning"></i> Requisitos Obligatorios:</div>
+          <ul class="requisitos-lista">
+            @for (req of campanaSeleccionada()?.requisitos; track req) {
+              <li>{{ req }}</li>
+            }
+          </ul>
+        </div>
+
+        <div class="dialog-acciones">
+          <button type="button" class="btn btn-wanka-outline" (click)="cerrarReserva()">Cancelar</button>
+          <button type="submit" class="btn btn-wanka fw-bold">Confirmar Reserva</button>
+        </div>
+      </form>
+    } @else {
+      <div class="reserva-exito">
+        <div class="exito-icono">
+          <i class="bi bi-check2-circle"></i>
+        </div>
+        <h3 class="exito-titulo">¡Cupo Reservado con Éxito!</h3>
+        <p class="exito-texto">
+          Se ha guardado un cupo para <strong>{{ nombreMascota() }}</strong> en la jornada del <strong>{{ campanaSeleccionada()?.fecha }}</strong> en {{ campanaSeleccionada()?.lugar }}.
+        </p>
+        <button class="btn btn-wanka w-100 fw-bold" (click)="cerrarReserva()">Aceptar y Cerrar</button>
+      </div>
+    }
+  </app-dialog>
+</div>

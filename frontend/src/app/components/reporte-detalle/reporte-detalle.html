@@ -1,0 +1,137 @@
+<div class="page-container">
+  @if (reporte(); as r) {
+    <app-page-header
+      kicker="RED DE ALERTA RÁPIDA • FICHA DE DIFUSIÓN"
+      [titulo]="nombreMascota(r)"
+      descripcion="Información difundida a albergues, serenazgo y brigadas de rescate del Valle del Mantaro."
+    >
+      <a routerLink="/inicio" fragment="reportes-recientes" class="btn btn-wanka-outline btn-sm">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i> Volver a los reportes
+      </a>
+      @if (r.activo) {
+        <app-status-badge tono="urgent">Reporte activo</app-status-badge>
+      } @else {
+        <app-status-badge tono="success">Caso cerrado</app-status-badge>
+      }
+    </app-page-header>
+
+    <section class="section-gap">
+      <div class="page-grid--with-aside">
+        <div>
+          <article class="wanka-card ficha-imagen">
+            @if (r.imagenUrl) {
+              <img [src]="r.imagenUrl" [alt]="nombreMascota(r)" class="img-cover" />
+            } @else {
+              <div class="ficha-sin-imagen"><i class="bi bi-heart-pulse" aria-hidden="true"></i></div>
+            }
+            <div class="ficha-imagen-badge">
+              <app-status-badge [tono]="tonoTipo(r.tipo)">{{ etiquetaTipo(r.tipo) }}</app-status-badge>
+            </div>
+          </article>
+
+          <article class="wanka-card p-4 mt-4">
+            <span class="section-kicker">ÚLTIMO AVISTAMIENTO</span>
+            <h2 class="h4 fw-bold text-ink mb-3">{{ r.distrito }}</h2>
+
+            <div class="datos-grid">
+              <div>
+                <span class="dato-label">Referencia</span>
+                <strong class="text-ink">{{ r.direccionOReferencia }}</strong>
+              </div>
+              <div>
+                <span class="dato-label">Fecha y hora</span>
+                <strong class="text-ink">{{ r.fechaSuceso }}</strong>
+              </div>
+              <div>
+                <span class="dato-label">Publicado</span>
+                <strong class="text-ink">{{ r.fechaCreacion }}</strong>
+              </div>
+              <div>
+                <span class="dato-label">Perímetro de búsqueda</span>
+                <strong class="text-ink">Radio de 2 km</strong>
+              </div>
+            </div>
+
+            <app-mapa-reporte
+              class="ficha-mapa"
+              [latitud]="r.latitud"
+              [longitud]="r.longitud"
+              [distrito]="r.distrito"
+              [soloLectura]="true"
+              [altura]="320"
+            />
+          </article>
+        </div>
+
+        <aside>
+          <article class="wanka-card p-4">
+            <span class="section-kicker">SEÑAS DISTINTIVAS</span>
+            <p class="text-ink fw-semibold mb-3">{{ r.rasgosDistintivos }}</p>
+
+            <div class="datos-lista">
+              <div><span>Especie</span><strong>{{ r.especie }}</strong></div>
+              <div><span>Género</span><strong>{{ r.genero || 'No indicado' }}</strong></div>
+              <div><span>Color</span><strong>{{ r.colorPrincipal }}</strong></div>
+              <div><span>Tamaño</span><strong>{{ r.tamano }}</strong></div>
+              <div><span>Collar</span><strong>{{ r.llevaCollar ? 'Sí' : 'No' }}</strong></div>
+            </div>
+
+            <div class="contacto-panel mt-4">
+              <span class="section-kicker">CONTACTO DE LA RED</span>
+              <strong class="text-ink">{{ r.nombreContacto }}</strong>
+
+              @if (r.mantenerNumeroVisible) {
+                <a class="btn btn-wanka w-100 mt-3" [href]="enlaceTelefono(r.telefonoContacto)">
+                  <i class="bi bi-telephone" aria-hidden="true"></i> {{ r.telefonoContacto }}
+                </a>
+                <a class="btn btn-wanka-outline w-100 mt-2" [href]="enlaceWhatsapp(r.telefonoContacto)" target="_blank" rel="noopener">
+                  <i class="bi bi-whatsapp" aria-hidden="true"></i> WhatsApp
+                </a>
+              } @else {
+                <p class="aviso-privacidad">
+                  <i class="bi bi-shield-check" aria-hidden="true"></i>
+                  Contacto protegido por WankaPets. La red coordina la comunicación de forma privada.
+                </p>
+              }
+
+              @if (r.emailContacto) {
+                <a class="correo" [href]="'mailto:' + r.emailContacto">{{ r.emailContacto }}</a>
+              }
+            </div>
+
+            @if (r.activo) {
+              <button type="button" class="btn btn-wanka-outline w-100 mt-4" (click)="confirmarCierre.set(true)">
+                <i class="bi bi-check2-circle" aria-hidden="true"></i> Marcar como encontrado
+              </button>
+            }
+          </article>
+        </aside>
+      </div>
+    </section>
+
+    <app-dialog
+      [open]="confirmarCierre()"
+      titulo="Marcar caso como encontrado"
+      (cerrado)="confirmarCierre.set(false)"
+    >
+      <p class="text-muted">
+        El reporte de <strong class="text-ink">{{ nombreMascota(r) }}</strong> dejará de contarse como activo y no aparecerá en la red de alerta.
+      </p>
+      <div class="d-flex justify-content-end gap-2 flex-wrap">
+        <button type="button" class="btn btn-wanka-outline" (click)="confirmarCierre.set(false)">Cancelar</button>
+        <button type="button" class="btn btn-wanka" (click)="marcarEncontrado()">
+          <i class="bi bi-check2-circle" aria-hidden="true"></i> Confirmar
+        </button>
+      </div>
+    </app-dialog>
+  } @else {
+    <app-page-header
+      kicker="RED DE ALERTA RÁPIDA"
+      titulo="Reporte no encontrado"
+      descripcion="El reporte solicitado no existe o ya no está disponible en esta sesión."
+    />
+    <a routerLink="/inicio" fragment="reportes-recientes" class="btn btn-wanka">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i> Volver a los reportes
+    </a>
+  }
+</div>

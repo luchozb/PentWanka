@@ -1,0 +1,98 @@
+.ficha-imagen {
+  position: relative;
+  height: clamp(260px, 42vw, 420px);
+  overflow: hidden;
+}
+
+.img-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+.ficha-sin-imagen {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: var(--accent-soft);
+  color: var(--accent-deep);
+  font-size: 3rem;
+}
+
+.ficha-imagen-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+}
+
+.datos-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 576px) {
+  .datos-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.dato-label,
+.datos-lista span {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--ink-tertiary);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ficha-mapa {
+  display: block;
+}
+
+.datos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-block: 0.5rem;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.datos-lista strong {
+  color: var(--ink);
+  font-size: 0.9375rem;
+}
+
+.contacto-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-muted);
+}
+
+.contacto-panel .btn { text-decoration: none; }
+
+.correo {
+  margin-top: 0.75rem;
+  font-family: 'Geist Mono', monospace;
+  font-size: 0.75rem;
+  word-break: break-all;
+}
+
+.aviso-privacidad {
+  margin: 0.75rem 0 0;
+  padding: 0.75rem;
+  border: 1px solid rgba(15, 118, 110, 0.16);
+  border-radius: var(--radius-sm);
+  background-color: var(--accent-soft);
+  color: var(--accent-deep);
+  font-size: 0.8125rem;
+}

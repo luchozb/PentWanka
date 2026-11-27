@@ -1,0 +1,111 @@
+<div class="page-container">
+  <app-page-header
+    kicker="Datos Abiertos • Observatorio Cívico de Bienestar Animal"
+    titulo="Observatorio de Impacto Comunitario en Junín"
+    descripcion="Datos abiertos, trazabilidad de rescates y transparencia comunitaria en tiempo real para la provincia de Huancayo y el Valle del Mantaro."
+  >
+    <div class="header-actions">
+      <app-filter-pills
+        [opciones]="periodos"
+        [activo]="periodoSeleccionado()"
+        (seleccionado)="seleccionarPeriodo($any($event))"
+      />
+      <a routerLink="/inicio" class="btn btn-wanka-outline btn-sm">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i> Volver a Inicio
+      </a>
+    </div>
+  </app-page-header>
+
+  @if (periodoSeleccionado() !== 'ANIO') {
+    <div class="wanka-card aviso-periodo p-3 mb-4" role="status">
+      <i class="bi bi-info-circle" aria-hidden="true"></i>
+      Los cortes trimestral y mensual estarán disponibles al conectar el observatorio con el backend. Por ahora se muestran las cifras anuales de 2024.
+    </div>
+  }
+
+  <!-- SECCIÓN 1: DISTRIBUCIÓN TERRITORIAL Y MÉDICA -->
+  <section class="section-gap">
+    <div class="section-heading">
+      <div>
+        <span class="section-kicker">Distribución territorial y médica</span>
+        <h2 class="section-title">Trazabilidad por Distritos del Valle del Mantaro</h2>
+      </div>
+      <app-status-badge tono="teal">Total: {{ observatorioService.totalCasos() }} Casos Atendidos</app-status-badge>
+    </div>
+
+    <div class="distritos-grid">
+      @for (d of observatorioService.distritos(); track d.id) {
+        <article class="wanka-card wanka-card-hover distrito-card">
+          <div class="distrito-head">
+            <h3 class="distrito-nombre">{{ d.nombre }}</h3>
+            <span [class]="'distrito-porcentaje porcentaje-' + d.tono">{{ d.porcentaje }}%</span>
+          </div>
+
+          <app-progress-track [valor]="d.porcentaje" [tono]="d.tono" />
+
+          <div class="distrito-casos">{{ d.casos }} casos atendidos</div>
+          <p class="distrito-zonas">Zonas prioritarias: {{ d.zonas }}</p>
+
+          <div class="distrito-cobertura">
+            <i class="bi bi-shield-check text-success" aria-hidden="true"></i> {{ d.cobertura }}
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <!-- SECCIÓN 2: CAPACIDAD DE ALBERGUES EN TIEMPO REAL -->
+  <section>
+    <div class="section-heading">
+      <div>
+        <span class="section-kicker">
+          <span class="live-dot" aria-hidden="true"></span> Capacidad de albergues en tiempo real
+        </span>
+        <h2 class="section-title">Directorio y Estado de la Red de Albergues Federados</h2>
+      </div>
+      <a routerLink="/inicio" class="btn btn-wanka-outline btn-sm">Ver Animales Albergados</a>
+    </div>
+
+    <p class="section-description">
+      Monitoreo de cupos, triage nutricional y requerimientos de suministros urgentes para los refugios aliados en Huancayo.
+    </p>
+
+    <div class="albergues-grid">
+      @for (albergue of albergueService.albergues(); track albergue.id) {
+        <article class="wanka-card wanka-card-hover albergue-card">
+          <div class="albergue-head">
+            <div>
+              <h3 class="albergue-nombre">{{ albergue.nombre }}</h3>
+              <div class="albergue-direccion">
+                <i class="bi bi-geo-alt text-danger" aria-hidden="true"></i> {{ albergue.direccion }}
+              </div>
+            </div>
+            <app-status-badge [tono]="albergue.porcentajeOcupacion > 90 ? 'urgent' : 'success'">
+              {{ albergue.porcentajeOcupacion }}% Ocupación
+            </app-status-badge>
+          </div>
+
+          <div class="albergue-capacidad">
+            <div class="albergue-meta">
+              <span>Animales albergados: <strong>{{ albergue.animalesAlbergados }}</strong></span>
+              <span>Límite: <strong>{{ albergue.limiteCapacidad }} plazas</strong></span>
+            </div>
+            <app-progress-track
+              [valor]="albergue.porcentajeOcupacion"
+              [tono]="albergue.porcentajeOcupacion > 90 ? 'urgent' : 'accent'"
+            />
+          </div>
+
+          <div class="albergue-footer">
+            <span class="albergue-coordinadora">
+              <i class="bi bi-person" aria-hidden="true"></i> {{ albergue.coordinadora }}
+            </span>
+            <a [routerLink]="['/albergues', albergue.id]" class="btn btn-wanka-outline btn-sm">
+              Ver Ficha y Aportar <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+</div>

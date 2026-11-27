@@ -1,0 +1,322 @@
+@if (mascota(); as m) {
+  <div class="page-container">
+    <nav aria-label="breadcrumb" class="mascota-breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/inicio">Inicio</a></li>
+        <li class="breadcrumb-item"><a routerLink="/inicio">Adopciones</a></li>
+        <li class="breadcrumb-item"><span>{{ m.especie }}s</span></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ m.nombre }}</li>
+      </ol>
+    </nav>
+
+    <app-page-header
+      kicker="Ficha de Adopción Responsable"
+      [titulo]="m.nombre"
+      descripcion="Historia, protocolo clínico y custodio oficial en el Valle del Mantaro."
+    >
+      <div class="header-actions">
+        <app-status-badge tono="teal">{{ m.estado }}</app-status-badge>
+        <span class="codigo-adopcion">{{ m.codigoAdopcion }}</span>
+        <a routerLink="/inicio" class="btn btn-wanka-outline btn-sm">
+          <i class="bi bi-arrow-left" aria-hidden="true"></i> Volver al Catálogo
+        </a>
+      </div>
+    </app-page-header>
+
+    <div class="page-grid--with-aside">
+      <div class="detalle-principal">
+        <article class="wanka-card galeria-card">
+          <img [src]="m.imagenUrl" [alt]="m.nombre" class="galeria-imagen" />
+          <div class="galeria-badges">
+            <app-status-badge tono="teal">
+              <i class="bi bi-patch-check-fill" aria-hidden="true"></i> Verificado WankaPets
+            </app-status-badge>
+            <app-status-badge tono="neutral">
+              <i class="bi bi-qr-code text-accent" aria-hidden="true"></i> Microchip: {{ m.microchip }}
+            </app-status-badge>
+          </div>
+        </article>
+
+        <div class="health-grid">
+          <div class="health-item">
+            <i class="bi bi-check2-circle text-success health-icon" aria-hidden="true"></i>
+            <div class="health-title">Esterilizado</div>
+            <span class="health-label">Protocolo Junín</span>
+          </div>
+          <div class="health-item">
+            <i class="bi bi-shield-check text-success health-icon" aria-hidden="true"></i>
+            <div class="health-title">Vacunas al Día</div>
+            <span class="health-label">Séxtuple + Rabia</span>
+          </div>
+          <div class="health-item">
+            <i class="bi bi-heart-pulse text-success health-icon" aria-hidden="true"></i>
+            <div class="health-title">Desparasitado</div>
+            <span class="health-label">Interna y Externa</span>
+          </div>
+        </div>
+
+        <section class="detalle-copy">
+          <div class="meta-pills">
+            <app-status-badge tono="neutral">
+              <i class="bi bi-geo-alt text-danger" aria-hidden="true"></i> Distrito: {{ m.distrito }}
+            </app-status-badge>
+            <app-status-badge tono="neutral">
+              <i class="bi bi-calendar3 text-accent" aria-hidden="true"></i> {{ m.edadAprox }}
+            </app-status-badge>
+            <app-status-badge tono="neutral">
+              <i class="bi bi-gender-ambiguous" aria-hidden="true"></i> {{ m.genero }}
+            </app-status-badge>
+            <app-status-badge tono="neutral">
+              <i class="bi bi-tag" aria-hidden="true"></i> {{ m.raza }}
+            </app-status-badge>
+          </div>
+
+          <h2 class="detalle-section-title">Historia y Personalidad</h2>
+          <p class="detalle-descripcion">{{ m.descripcion }}</p>
+
+          <div class="evaluacion-callout bg-accent-soft border-accent">
+            <div class="evaluacion-titulo text-accent-deep">
+              <i class="bi bi-award-fill" aria-hidden="true"></i> Evaluación Conductual Superada
+            </div>
+            <p>{{ m.evaluacionConductual }}</p>
+          </div>
+        </section>
+      </div>
+
+      <aside class="detalle-aside">
+        <div class="wanka-card custodio-card">
+          <div class="custodio-head">
+            <div>
+              <span class="section-kicker">Custodio Oficial</span>
+              <h2 class="custodio-nombre">{{ m.nombreAlbergue }}</h2>
+            </div>
+            <app-status-badge tono="success">Refugio Aliado</app-status-badge>
+          </div>
+
+          <p class="custodio-dato">
+            <i class="bi bi-person-badge" aria-hidden="true"></i> Coordinación: {{ m.coordinadorAlbergue }}
+          </p>
+          <p class="custodio-dato">
+            <i class="bi bi-geo-alt-fill text-danger" aria-hidden="true"></i>
+            {{ m.direccionAlbergue }} ({{ m.referenciaAlbergue }})
+          </p>
+
+          <div class="custodio-acciones">
+            <a [href]="'https://wa.me/' + m.telefonoAlbergue" target="_blank" class="btn btn-wanka-outline btn-sm btn-whatsapp">
+              <i class="bi bi-whatsapp" aria-hidden="true"></i> WhatsApp Refugio
+            </a>
+            <a href="https://maps.google.com/?q=El+Tambo+Huancayo" target="_blank" class="btn btn-wanka-outline btn-sm">
+              <i class="bi bi-map" aria-hidden="true"></i> Abrir GPS
+            </a>
+            <a [routerLink]="['/albergues', m.albergueId]" class="btn btn-wanka-outline btn-sm">
+              Ver Albergue
+            </a>
+          </div>
+        </div>
+
+        <div class="acciones-stack">
+          <button
+            type="button"
+            class="btn btn-wanka"
+            (click)="abrirModalPostulacion()"
+          >
+            <i class="bi bi-heart-fill" aria-hidden="true"></i> Postular a la Adopción de {{ m.nombre }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-wanka-outline btn-hogar-temporal"
+            (click)="abrirModalHogarTemporal()"
+          >
+            <i class="bi bi-house-heart-fill" aria-hidden="true"></i>
+            Brindar Hogar Temporal a {{ m.nombre }} (2 a 4 semanas)
+          </button>
+        </div>
+      </aside>
+    </div>
+  </div>
+}
+
+<!-- MODAL 1: FORMULARIO DE POSTULACIÓN A ADOPCIÓN -->
+<app-dialog
+  [open]="mostrarModalPostulacion()"
+  titulo="Solicitud de Adopción Responsable"
+  (cerrado)="cerrarModalPostulacion()"
+>
+  <div class="dialog-intro">
+    <app-status-badge tono="neutral">Paso 1 de 2: Postulación</app-status-badge>
+    <p>Postulación para: {{ mascota()?.nombre }} ({{ mascota()?.codigoAdopcion }})</p>
+  </div>
+
+  <form (ngSubmit)="enviarPostulacion()">
+    <h3 class="form-section-title text-accent">1. Datos de Vivienda y Entorno</h3>
+
+    <div class="form-grid form-section">
+      <div>
+        <label class="form-label" for="tipoVivienda">Tipo de Vivienda</label>
+        <select
+          class="form-select"
+          id="tipoVivienda"
+          [ngModel]="tipoVivienda()"
+          (ngModelChange)="tipoVivienda.set($event)"
+          name="tipoVivienda"
+        >
+          <option value="Casa propia">Casa propia (con patio/jardín)</option>
+          <option value="Departamento">Departamento (permite mascotas)</option>
+          <option value="Alquilada (con permiso)">Vivienda alquilada (con autorización)</option>
+        </select>
+      </div>
+
+      <div>
+        <span class="form-label d-block">¿Cuentas con otras mascotas actualmente?</span>
+        <div class="radio-row">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="otrasMascotas" id="petSi" [checked]="tieneOtrasMascotas()" (change)="tieneOtrasMascotas.set(true)">
+            <label class="form-check-label" for="petSi">Sí, tengo</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="otrasMascotas" id="petNo" [checked]="!tieneOtrasMascotas()" (change)="tieneOtrasMascotas.set(false)">
+            <label class="form-check-label" for="petNo">No, sería la única</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="form-section-title text-accent">2. Motivación y Compromiso</h3>
+
+    <div class="form-section">
+      <label class="form-label" for="motivoAdopcion">¿Por qué deseas adoptar a {{ mascota()?.nombre }}?</label>
+      <textarea
+        class="form-control"
+        id="motivoAdopcion"
+        rows="3"
+        placeholder="Cuéntanos sobre tu rutina diaria y cómo se integrará a tu familia..."
+        [ngModel]="motivoAdopcion()"
+        (ngModelChange)="motivoAdopcion.set($event)"
+        name="motivoAdopcion"
+        required
+      ></textarea>
+    </div>
+
+    <div class="form-section">
+      <label class="form-label" for="experienciaPrevia">Experiencia previa con animales y cuidados veterinarios</label>
+      <input
+        type="text"
+        class="form-control"
+        id="experienciaPrevia"
+        placeholder="Ej: He tenido perros antes, cuento con veterinario en El Tambo..."
+        [ngModel]="experienciaPrevia()"
+        (ngModelChange)="experienciaPrevia.set($event)"
+        name="experienciaPrevia"
+      />
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-wanka-outline" (click)="cerrarModalPostulacion()" [disabled]="cargandoEnvio()">
+        Cancelar
+      </button>
+      <button type="submit" class="btn btn-wanka" [disabled]="cargandoEnvio()">
+        @if (cargandoEnvio()) {
+          <span class="skeleton skeleton-inline" aria-hidden="true"></span> Enviando...
+        } @else {
+          <i class="bi bi-send-fill" aria-hidden="true"></i> Enviar Postulación Oficial
+        }
+      </button>
+    </div>
+  </form>
+</app-dialog>
+
+<!-- MODAL 2: CONFIRMACIÓN Y CÓDIGO OFICIAL #ADOP -->
+<app-dialog
+  [open]="mostrarModalExito()"
+  titulo="¡Solicitud de Adopción Enviada con Éxito!"
+  (cerrado)="cerrarExito()"
+>
+  <div class="dialog-centrado">
+    <span class="exito-icono text-success bg-accent-soft">
+      <i class="bi bi-check-lg" aria-hidden="true"></i>
+    </span>
+
+    <app-status-badge tono="teal">¡Misión Cumplida en el Valle del Mantaro!</app-status-badge>
+
+    <p>
+      Tu postulación para brindar un hogar a <strong>{{ mascota()?.nombre }}</strong> ha sido registrada con respaldo oficial en el sistema de <strong>{{ mascota()?.nombreAlbergue }}</strong>.
+    </p>
+
+    <div class="codigo-callout">
+      <span class="section-kicker">CÓDIGO DE SEGUIMIENTO OFICIAL</span>
+      <div class="codigo-valor text-accent">{{ codigoGenerado() }}</div>
+    </div>
+
+    <button type="button" class="btn btn-wanka" (click)="cerrarExito()">
+      Entendido, Volver al Inicio
+    </button>
+  </div>
+</app-dialog>
+
+<!-- MODAL 3: SOLICITUD HOGAR TEMPORAL ENVIADA -->
+<app-dialog
+  [open]="mostrarModalHogarExito()"
+  titulo="¡Solicitud de hogar temporal Enviada!"
+  (cerrado)="cerrarExitoHogar()"
+>
+  <div class="dialog-centrado">
+    <app-status-badge tono="teal">¡Misión Cumplida en el Valle del Mantaro!</app-status-badge>
+    <p>
+      Tu postulación para brindar un hogar temporal a {{ mascota()?.nombre }} ha sido registrada con respaldo oficial en el sistema de WankaPet.
+    </p>
+    <p class="paso-nota">Proceso amparado por el Protocolo Cívico de Adopción Responsable de Junín</p>
+  </div>
+
+  <div class="pasos-panel">
+    <div class="pasos-head">
+      <h3>Próximos Pasos del Proceso</h3>
+      <app-status-badge tono="ochre">Paso 1 de 3 en marcha</app-status-badge>
+    </div>
+
+    <div class="pasos-grid">
+      <div class="wanka-card paso-card">
+        <app-status-badge tono="teal">1</app-status-badge>
+        <div class="paso-titulo">Revisión del Albergue</div>
+        <p>En 24 - 48 hrs, el equipo evaluará tus datos domiciliarios para {{ mascota()?.nombre }}.</p>
+      </div>
+      <div class="wanka-card paso-card">
+        <app-status-badge tono="neutral">2</app-status-badge>
+        <div class="paso-titulo">Contacto WhatsApp</div>
+        <p>Coordinación de entrevista corta al teléfono <strong>+51 964 000 000</strong>.</p>
+      </div>
+      <div class="wanka-card paso-card">
+        <app-status-badge tono="neutral">3</app-status-badge>
+        <div class="paso-titulo">Firma y Entrega</div>
+        <p>Firma presencial del acta de acogida temporal y cartilla al día.</p>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-wanka" (click)="cerrarExitoHogar()">
+    Cerrar
+  </button>
+</app-dialog>
+
+<!-- MODAL PREVIO DE HOGAR TEMPORAL -->
+<app-dialog
+  [open]="mostrarModalHogarTemporal()"
+  [titulo]="'Hogar Temporal para ' + (mascota()?.nombre || '')"
+  (cerrado)="cerrarModalHogar()"
+>
+  <p class="dialog-lead">
+    Al brindar hogar temporal, el albergue cubre el 100% de la comida y medicinas.
+  </p>
+
+  <div class="form-section">
+    <label class="form-label" for="diasDisponibles">Tiempo estimado de acogida</label>
+    <select class="form-select" id="diasDisponibles" [ngModel]="diasDisponibles()" (ngModelChange)="diasDisponibles.set($event)">
+      <option value="1 a 2 semanas">1 a 2 semanas</option>
+      <option value="3 a 4 semanas">3 a 4 semanas</option>
+      <option value="Hasta adopción">Hasta adopción definitiva</option>
+    </select>
+  </div>
+
+  <button class="btn btn-wanka" (click)="enviarPostulacionHogar()">
+    Confirmar y Enviar Solicitud
+  </button>
+</app-dialog>

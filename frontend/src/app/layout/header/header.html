@@ -1,0 +1,97 @@
+<header class="cintillo">
+  <div class="page-container cintillo-inner">
+    <div class="cintillo-left">
+      <span><strong>Valle del Mantaro:</strong> Huancayo · El Tambo · Chilca · Pilcomayo</span>
+      <span class="cintillo-extra">Red Oficial de Bienestar Animal</span>
+    </div>
+    <div class="cintillo-right">
+      <span class="cintillo-telefono"><i class="bi bi-telephone-fill"></i> Emergencias Animales: <strong>(064) 21-8890</strong></span>
+      <a routerLink="/observatorio"><i class="bi bi-activity"></i> Observatorio en Vivo</a>
+    </div>
+  </div>
+</header>
+
+<nav class="nav-principal" aria-label="Navegación principal">
+  <div class="page-container nav-inner">
+    <a class="marca" routerLink="/inicio" (click)="menuAbierto.set(false)">
+      <span class="marca-icono"><i class="bi bi-heart-pulse-fill"></i></span>
+      <span class="marca-texto">
+        <strong>WankaPets</strong>
+        <small>Valle del Mantaro</small>
+      </span>
+    </a>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      (click)="menuAbierto.set(!menuAbierto())"
+      [attr.aria-expanded]="menuAbierto()"
+      aria-controls="menu-principal"
+      aria-label="Abrir menú"
+    >
+      <i class="bi" [class.bi-list]="!menuAbierto()" [class.bi-x-lg]="menuAbierto()"></i>
+      <span>Menú</span>
+    </button>
+
+    <div id="menu-principal" class="menu-colapsable" [class.abierto]="menuAbierto()">
+      <ul class="nav-lista">
+        <li><a routerLink="/inicio" routerLinkActive="activo" (click)="menuAbierto.set(false)">Inicio / Adopciones</a></li>
+        <li><a routerLink="/campanas" routerLinkActive="activo" (click)="menuAbierto.set(false)">Campañas Veterinarias</a></li>
+        <li><a routerLink="/inicio" fragment="hogar-temporal" (click)="menuAbierto.set(false)">Hogar Temporal</a></li>
+        <li><a routerLink="/reportes/nuevo" routerLinkActive="activo" (click)="menuAbierto.set(false)">Reportar Extravío</a></li>
+        <li><a routerLink="/observatorio" routerLinkActive="activo" (click)="menuAbierto.set(false)">Impacto Comunitario</a></li>
+        <li><a routerLink="/albergues/alb-1" routerLinkActive="activo" (click)="menuAbierto.set(false)">Red de Albergues</a></li>
+      </ul>
+
+      <div class="nav-acciones">
+        <a routerLink="/reportes/nuevo" class="btn btn-wanka-alert" (click)="menuAbierto.set(false)">
+          <i class="bi bi-megaphone-fill"></i> Reportar Pérdida
+        </a>
+
+        @if (authService.estaAutenticado()) {
+          <div class="perfil">
+            <button
+              class="perfil-toggle"
+              type="button"
+              (click)="perfilAbierto.set(!perfilAbierto())"
+              [attr.aria-expanded]="perfilAbierto()"
+            >
+              <span class="perfil-avatar"><i class="bi bi-person-fill"></i></span>
+              <span class="perfil-datos">
+                <strong>{{ authService.usuarioActual()?.nombreCompleto?.split(' ')?.[0] }}</strong>
+                <small>
+                  @if (authService.esAlbergue()) {
+                    Albergue Mantaro
+                  } @else if (authService.esVeterinaria()) {
+                    Veterinaria Aliada
+                  } @else {
+                    Vecino Huancayo
+                  }
+                </small>
+              </span>
+              <i class="bi bi-chevron-down"></i>
+            </button>
+
+            @if (perfilAbierto()) {
+              <div class="perfil-menu">
+                <div class="perfil-info">
+                  <strong>{{ authService.usuarioActual()?.nombreCompleto }}</strong>
+                  <span>{{ authService.usuarioActual()?.email }}</span>
+                  <span class="perfil-distrito">{{ authService.usuarioActual()?.distrito }} (Junín)</span>
+                </div>
+                <a routerLink="/perfil" class="enlace-panel" (click)="perfilAbierto.set(false)">
+                  <i class="bi bi-card-list"></i> Mis publicaciones
+                </a>
+                <button type="button" (click)="cerrarSesion()">
+                  <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </button>
+              </div>
+            }
+          </div>
+        } @else {
+          <a routerLink="/login" class="btn btn-wanka-outline" (click)="menuAbierto.set(false)">Iniciar Sesión</a>
+        }
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,14 @@
+<div class="page-header">
+  <div class="page-header-copy">
+    @if (kicker()) {
+      <span class="page-kicker"><i class="bi bi-diamond-fill"></i> {{ kicker() }}</span>
+    }
+    <h1>{{ titulo() }}</h1>
+    @if (descripcion()) {
+      <p>{{ descripcion() }}</p>
+    }
+  </div>
+  <div class="page-header-actions">
+    <ng-content />
+  </div>
+</div>

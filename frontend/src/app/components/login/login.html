@@ -1,0 +1,161 @@
+<div class="page-container">
+  <div class="row align-items-center justify-content-center g-5">
+    <!-- ======================================================================
+         Columna izquierda: información cívica y estadísticas
+         ====================================================================== -->
+    <div class="col-lg-6">
+      <app-page-header
+        kicker="Sistema Comunitario Unificado"
+        titulo="Bienvenido a WankaPets"
+        descripcion="Plataforma digital para la protección, rescate inmediato y adopción responsable en la provincia de Huancayo. Conectamos vecinos, refugios comunales y clínicas veterinarias."
+      />
+
+      <!-- Indicador de rescates y red cívica de Junín -->
+      <div class="wanka-card red-callout p-3 mb-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <app-status-badge tono="success"><i class="bi bi-geo-alt-fill"></i> Junín</app-status-badge>
+          <span class="fw-bold text-accent-deep">
+            +1,420 rescates gestionados en el Valle del Mantaro
+          </span>
+        </div>
+
+        <div class="row text-center g-2 pt-1">
+          <div class="col-4">
+            <div class="wanka-card stat-box p-2">
+              <div class="fs-4 fw-bold text-accent">18</div>
+              <div class="small text-muted fw-semibold">Albergues</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="wanka-card stat-box p-2">
+              <div class="fs-4 fw-bold text-accent">32</div>
+              <div class="small text-muted fw-semibold">Veterinarias</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="wanka-card stat-box p-2">
+              <div class="fs-4 fw-bold text-accent">890+</div>
+              <div class="small text-muted fw-semibold">Vecinos</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-wrap align-items-center gap-3 text-muted small">
+        <div><i class="bi bi-check2-circle text-success fs-5 align-middle me-1"></i> Respaldo CMVP</div>
+        <div><i class="bi bi-check2-circle text-success fs-5 align-middle me-1"></i> Trazabilidad GPS</div>
+        <div><i class="bi bi-check2-circle text-success fs-5 align-middle me-1"></i> Microchips Junín</div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         Columna derecha: tarjeta de acceso
+         ====================================================================== -->
+    <div class="col-lg-5 col-md-8">
+      <div class="wanka-card p-4 p-md-5 acceso-card">
+        <div class="text-center mb-4">
+          <span class="acceso-icono mb-2"><i class="bi bi-person-fill-lock fs-2"></i></span>
+          <h2 class="h4 fw-bold mb-1">Acceso Comunitario WankaPets</h2>
+          <p class="text-muted small mb-0">
+            Ingresa con tus credenciales registradas para gestionar adopciones o reportes de emergencia.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-wanka-outline w-100 py-2 mb-3 d-flex align-items-center justify-content-center gap-2 fw-semibold btn-google"
+          (click)="iniciarConGoogle()"
+          [disabled]="cargando()"
+        >
+          <i class="bi bi-google" aria-hidden="true"></i>
+          Continuar con Google
+        </button>
+
+        <div class="position-relative text-center my-3">
+          <hr class="separador-suave" />
+          <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">
+            o con correo electrónico
+          </span>
+        </div>
+
+        @if (errorMensaje()) {
+          <div class="alerta-error py-2 small d-flex align-items-center gap-2 mb-3">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <div>{{ errorMensaje() }}</div>
+          </div>
+        }
+
+        <form (ngSubmit)="iniciarSesion()">
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted" for="email">Correo Electrónico</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-envelope"></i></span>
+              <input
+                id="email"
+                type="email"
+                class="form-control bg-light border-start-0"
+                placeholder="ejemplo@wankapets.pe"
+                [ngModel]="email()"
+                (ngModelChange)="email.set($event)"
+                name="email"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <label class="form-label small fw-bold text-muted mb-0" for="password">Contraseña</label>
+              <a href="javascript:void(0)" class="small text-decoration-none text-accent">¿Olvidaste tu contraseña?</a>
+            </div>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-lock"></i></span>
+              <input
+                id="password"
+                type="password"
+                class="form-control bg-light border-start-0"
+                placeholder="Ingresa tu contraseña"
+                [ngModel]="password()"
+                (ngModelChange)="password.set($event)"
+                name="password"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-check mb-4">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="recordarCheck"
+              [checked]="recordarSesion()"
+              (change)="recordarSesion.set(!recordarSesion())"
+            />
+            <label class="form-check-label small text-muted" for="recordarCheck">
+              Recordar mi sesión en este dispositivo
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-wanka w-100 py-2 fs-6 mb-3"
+            [disabled]="cargando()"
+          >
+            @if (cargando()) {
+              <span class="skeleton btn-skeleton" aria-hidden="true"></span> Accediendo...
+            } @else {
+              <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+            }
+          </button>
+        </form>
+
+        <div class="text-center pt-2 border-top">
+          <span class="small text-muted">¿Aún no tienes cuenta? </span>
+          <a routerLink="/registro" class="small fw-bold text-decoration-none text-accent">
+            Crear Cuenta por Rol
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

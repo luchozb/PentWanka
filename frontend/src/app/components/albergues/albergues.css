@@ -1,0 +1,311 @@
+/* Albergues — sistema WankaPets Premium */
+
+.albergue-hero {
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.hero-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+}
+
+@media (min-width: 992px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+}
+
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.albergue-nombre {
+  margin: 0 0 0.85rem;
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--ink-secondary);
+}
+
+.hero-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.hero-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.aforo-panel {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background-color: var(--surface);
+  text-align: center;
+}
+
+.aforo-kicker {
+  margin-bottom: 0.5rem;
+}
+
+.aforo-valor {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: clamp(2.25rem, 4vw, 3.25rem);
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--accent-deep);
+}
+
+.aforo-panel.es-critico .aforo-valor {
+  color: var(--urgent);
+}
+
+.aforo-etiqueta {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.aforo-detalle {
+  margin-top: 0.85rem;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--ink-secondary);
+}
+
+.aforo-limite {
+  color: var(--ink-secondary);
+}
+
+.seccion-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.seccion-titulo {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.enlace-destacado {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.mascotas-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 768px) {
+  .mascotas-grid {
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+}
+
+.mascota-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mascota-media {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.mascota-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mascota-estado {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+}
+
+.mascota-distrito {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+}
+
+.mascota-cuerpo {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.mascota-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.mascota-nombre {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.mascota-edad {
+  font-size: 0.8125rem;
+  color: var(--ink-secondary);
+}
+
+.mascota-atributos {
+  margin-bottom: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--ink-secondary);
+}
+
+.mascota-descripcion {
+  flex: 1 1 auto;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--ink-secondary);
+}
+
+.mision-card,
+.colaborar-card {
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.mision-texto {
+  margin-block: 1rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--ink-secondary);
+}
+
+.sede-nota {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-muted);
+  font-size: 0.875rem;
+  color: var(--ink-secondary);
+}
+
+.colaborar-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.colaborar-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 1rem;
+  border-radius: var(--radius-pill);
+  background-color: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1.75rem;
+}
+
+.colaborar-titulo {
+  margin-bottom: 0.5rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.colaborar-texto {
+  margin-bottom: 1.25rem;
+  font-size: 0.875rem;
+  color: var(--ink-secondary);
+}
+
+.dialog-subtitulo {
+  margin: 0 0 1.25rem;
+  font-size: 0.875rem;
+  color: var(--ink-secondary);
+}
+
+.donacion-canal {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-muted);
+}
+
+.canal-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--ink);
+}
+
+.canal-numero {
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.canal-cci {
+  margin-top: 0.25rem;
+  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-size: 0.8125rem;
+  color: var(--ink-secondary);
+}
+
+.nota-alimentos {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-muted);
+  font-size: 0.875rem;
+  color: var(--ink-secondary);
+}
